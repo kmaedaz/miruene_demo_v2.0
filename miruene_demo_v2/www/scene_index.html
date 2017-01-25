@@ -1,0 +1,60 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+  <!-- 機器の操作インデックス -->
+  <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="Content-Security-Policy" content="default-src * data:; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
+
+  <script src="./js/jquery-1.11.3.min.js"></script>
+    <!-- 効果音-->
+    <script src="./js/ion.sound.min.js"></script>
+    <script src="./js/sound.js"></script>
+
+
+  <link rel="stylesheet" href="css/style.css">
+　<link rel="stylesheet" href="css/anime_btn.css">
+  <script src="js/btn.js"></script>
+
+  <script>
+      $(document).ready(function () {
+      console.log(" UI is ready!");
+      setBtnAnim();
+      setBtnSound();
+    });
+
+  </script>
+</head>
+<body>
+
+        <div style="position: relative;margin: 0px; padding: 0px;width:100%;height: auto;">
+            <img border="0" src="./hdimages/bk_scn_menu.png" width="2736" height="1824" style="position: absolute;top:0;left:0">
+
+            <a href="scn_nechu.html">
+            <img border="0" src="./hdimages/btn_nechu.png " class="btn_tap_anim btn_tap_sound" alt="熱中症予防" style="position:absolute;left:578px;top:551px;">
+            </a>
+
+            <a href="scn_bohan.html">
+            <img border="0" src="./hdimages/btn_bohan.png " class="btn_tap_anim btn_tap_sound" alt="防犯" style="position:absolute;left:578px;top:742px;">
+            </a>
+
+
+            <a href="scn_kisho.html">
+            <img border="0" src="./hdimages/btn_kisho.png " class="btn_tap_anim btn_tap_sound" alt="起床" style="position:absolute;left:578px;top:932px;">
+            </a>
+
+            <a href="scn_gaishutu.html">
+                <img border="0" src="./hdimages/btn_gaishutu.png " class="btn_tap_anim btn_tap_sound" alt="外出" style="position:absolute;left:578px;top:1122px;">
+            </a>
+
+            <a href="scn_kitaku_a.html">
+                <img border="0" src="./hdimages/btn_kitaku.png " class="btn_tap_anim btn_tap_sound" alt="帰宅前半" style="position:absolute;left:578px;top:1312px;">
+            </a>
+            <a href="./top_menu.html">
+                <img border="0" src="./hdimages/btn_return.png" class="btn_tap_anim btn_tap_sound" style="position:absolute;left:144px;top:1424px;" alt="トップに戻る">
+            </a>
+        </div>
+
+
+</body>
+</html>

@@ -1,0 +1,288 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+  <!-- 機器の操作 -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="Content-Security-Policy" content="default-src * data:; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
+
+    <script src="./js/jquery-1.11.3.min.js"></script>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <script src="js/irkit.js"></script>
+    <script src="js/scenario.js"></script>
+
+
+    <link rel="stylesheet" href="css/anime_btn.css">
+    <script src="js/btn.js"></script>
+
+    <title>機器の操作</title>
+    
+
+    <style>
+    /*  エアコン */
+    #aircon_panel{
+        position: relative;
+    }
+
+    #aircon_base{
+        top: 32px;
+        Left: 60px;
+    }
+    #aircon_up {
+        position: absolute;
+        top: 60px;
+        Left: 710px;
+    }
+    
+    #aircon_down {
+        position: absolute;
+        top: 192px;
+        Left: 710px;
+    }
+    
+    #aircon_temp_txt {
+        position: absolute;
+        font-size: 7.4em;
+        font-weight: bold;
+        top: 460px;
+        Left: 320px;
+    }
+
+    #purifier_hum_txt {
+        position: absolute;
+        font-size: 7.4em;
+        font-weight: bold;
+        top: 460px;
+        Left: 320px;
+    }
+
+
+    /*  テレビ */
+    #tv_power_base{
+        position: relative;
+    }
+
+    #tv_power {
+        position: absolute;
+        top: 88px;
+        Left: -16px;
+        width:98%;
+    }
+    
+    #tv_ch_base {
+        position: relative;
+    }
+    
+    
+    #tv_ch_up {
+        position: absolute;
+        top: 86px;
+        Left: -24px;
+    }
+    
+    #tv_ch_down {
+        position: absolute;
+        top: 246px;
+        Left: -24px;
+        }
+    </style>
+
+  <script>
+        var opration_flag =  true; //操作されたかチェック
+        const DEFAULT_TEMPERATURE=25;// エアコン初期温度
+        const DEFAULT_HUMD =50 ;
+        function  use_vibrate() {
+            navigator.vibrate(100);
+        }
+        function opration_check() {
+             
+             if(!opration_flag){
+                console.log("index");
+    			// 家電機器初期設定
+				location.href="kiki_menu.html";
+			 } else{
+				console.log("index");
+				return true;
+             }
+			 opration_flag=false;
+		}
+
+	$(document).ready(function(){
+		console.log("UI is ready!");
+        setBtnAnim(); 
+  		//
+		const OP_TIME = 200; //操作画面への遷移
+		const NEXTPAGE_TIME = 3400; //操作画面への遷移
+		const NO_OPRATIN_TIME = 30000; //何もしなければ操作画面への遷移
+
+		var temperature_value = DEFAULT_TEMPERATURE; //既定値
+		var aircon_temp_txt1 =  $("#aircon_temp_txt"); //エアコン温度表示
+    	var purifier_hum_txt1 = $("#purifier_hum_txt"); //湿度表示
+		var humd_value = DEFAULT_HUMD; //既定値
+			purifier_hum_txt1.innerHTML = humd_value ; 
+    		aircon_temp_txt1.innerHTML = temperature_value ; 
+            
+		// 一定期間操作がなければ　機器操作index
+    	
+		setInterval(opration_check(),NO_OPRATIN_TIME); //
+
+
+		 // clearInterval(opration_check);
+
+        sendIRkit_init_command();
+        scenario_exec("SCENARIO_ALLT_RESET");
+
+        var rep_hits_flag =  true; //操作されたかチェック
+
+    	function  hits_flag() {
+    	    if (rep_hits_flag) {
+    	        return true;
+    	    }
+    	    rep_hits_flag = true;
+            use_vibrate();
+            setTimeout( function (){
+				console.log("kye enabled");
+				rep_hits_flag =false ;
+		    } , 1500); 			
+            return false;
+
+    	}
+
+		/*
+			イベントハンドラー
+		*/
+		//  すべて
+		$(document).on('click',function(e) {
+		 opration_flag=true;
+		});
+
+
+		/*
+		// begin 機器操作インデックス　画面遷移
+		*/
+
+
+		/*------------------------------
+		　家電操作
+		--------------------------------*/
+		/*
+		 照明操作
+		*/
+		//イベントハンドら
+		$(document).on('click','#light_all_off',function(e) {
+		    if (hits_flag()) {
+				console.log("連打禁止");
+				return ;
+			}
+            sendIRkit_command("LIGHT_OFF");
+			console.log("light_all_off");
+		});
+
+		//イベントハンドら
+		$(document).on('click','#light_all_on',function(e) {
+		    if (hits_flag()) {
+		        console.log("連打禁止");
+		        return;
+		    }
+		sendIRkit_command("LIGHT_ON");
+			console.log("ight_all_on");
+		});
+
+		//イベント明るく
+		$(document).on('click','#light_bright',function(e) {
+		    if (hits_flag()) {
+		        console.log("連打禁止");
+		        return;
+		    }
+		    if (light_bright < 5) {
+				light_bright++;
+				var t= "LIGHT_BRIGHT" + light_bright ;
+				sendIRkit_command(t);
+			}
+	            console.log("light_bright");
+		});
+
+		//イベント 減灯
+		$(document).on('click','#light_reduce',function(e) {
+		    if (hits_flag()) {
+		        console.log("連打禁止");
+		        return;
+		    }
+		    sendIRkit_command("LIGHT_WARMCOLOR"); //test
+            console.log("light_reduce");
+        });
+
+		//イベント常夜灯
+		$(document).on('click','#light_night',function(e) {
+		    if (hits_flag()) {
+		        console.log("連打禁止");
+		        return;
+		    }
+		    sendIRkit_command("LAMP_ON");
+			console.log("light_night");
+		});
+
+		//イベント
+		$(document).on('click','#light_dark',function(e) {
+		    if (hits_flag()) {
+		        console.log("連打禁止");
+		        return;
+		    }
+		    if (light_bright > 0) {
+				light_bright--;
+				var t= "LIGHT_BRIGHT" + light_bright ;
+				sendIRkit_command(t);
+			}
+			//sendIRkit_command("LAMP_DOWN");
+			console.log("light_dark");
+		});
+
+
+
+		//機器操作インデクス
+		$(document).on('click','.op_index',function(e) {
+            if(rep_hits_flag){
+				console.log("連打禁止");
+				return ;
+			}
+    		hits_flag(this);
+			console.log("op_index");
+            sendIRkit_init_command();
+            location.href="op_index.html";
+		});
+
+    	$(document).on('click',function(e) {
+		});
+
+
+    });
+
+  </script>
+</head>
+
+<body>
+    <!--照明操作-->
+
+    <div style="position: relative;margin: 0px; padding: 0px;width:100%;height: auto;">
+        <img border="0" src="./hdimages/bk_kiki_shomei.png"  style="position: absolute;top:0;left:0">
+      
+        
+        <img border="0" src="./hdimages/btn_shomei_zento.png"  id="light_all_on"  class="btn_tap_anim" style="position:absolute;left:543px;top:441px"   alt="明全灯ON">
+    
+        <img border="0" src="./hdimages/btn_shomei_off.png"  id="light_all_off"  class="btn_tap_anim" style="position:absolute;left:1131px;top:441px" alt="全灯OFF">
+        
+        <img border="0" src="./hdimages/btn_shomei_joyato.png"  id="light_night"  class="btn_tap_anim" style="position:absolute;left:1719px;top:441px" alt="常夜灯">
+        
+        <img border="0" src="./hdimages/btn_shomei_up.png"  id="light_bright" class="btn_tap_anim" style="position:absolute;left:836px;top:971px" alt="明るく">
+        
+        <img border="0" src="./hdimages/btn_shomei_down.png"  id="light_dark" class="btn_tap_anim" style="position:absolute;left:1424px;top:971px" alt="暗く">
+        
+        <a href="javascript:void(0)" class="op_index" >
+        <img border="0" src="./hdimages/btn_kiki_return.png" class="btn_tap_anim" style="position:absolute;left:145px;top:1424px"  alt="機器の操作に戻る">
+        </a>
+	</div>
+    
+</body>
+</html>

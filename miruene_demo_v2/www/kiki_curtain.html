@@ -1,0 +1,156 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+  <!-- 機器の操作 -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="Content-Security-Policy" content="default-src * data:; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
+
+
+    <script src="./js/jquery-1.11.3.min.js"></script>
+    <!-- 効果音-->
+    <script src="./js/ion.sound.min.js"></script>
+    <script src="./js/sound.js"></script>
+
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <script src="js/irkit.js"></script>
+    <script src="js/scenario.js"></script>
+
+
+    <link rel="stylesheet" href="css/anime_btn.css">
+    <script src="js/btn.js"></script>
+
+    <title>機器の操作(カーテン)</title>
+    
+
+    <style>
+    </style>
+
+  <script>
+        var opration_flag =  true; //操作されたかチェック
+        const DEFAULT_TEMPERATURE=25;// エアコン初期温度
+        const DEFAULT_HUMD =50 ;
+        function  use_vibrate() {
+            navigator.vibrate(100);
+        }
+        function  opration_check() {
+             if(!opration_flag){
+                console.log("index");
+    			// 家電機器初期設定
+                sendIRkit_init_command();
+                scenario_exec("SCENARIO_ALLT_RESET");
+				var val = DEFAULT_TEMPERATURE; //エアコン温度表示
+                location.href="kiki_menu.html";
+			 }
+			 opration_flag=false;
+		}
+
+
+$(document).ready(function(){
+		console.log("Onsen UI is ready!");
+		setBtnAnim();
+		setBtnSound();
+  		//
+		const OP_TIME = 200; //操作画面への遷移
+		const NEXTPAGE_TIME = 3400; //操作画面への遷移
+		const NO_OPRATIN_TIME = 30000; //何もしなければ操作画面への遷移
+
+		// 一定期間操作がなければ　機器操作index
+    	
+		setInterval(opration_check(),NO_OPRATIN_TIME); //
+
+
+		 // clearInterval(opration_check);
+
+        sendIRkit_init_command();
+        scenario_exec("SCENARIO_ALLT_RESET");
+
+        var rep_hits_flag =  false; //操作されたかチェック
+
+    	function  hits_flag() {
+			rep_hits_flag= true;
+            use_vibrate();
+            setTimeout( function (){
+				console.log("kye enabled");
+				rep_hits_flag =false ;
+		    } , 1500); 			
+		}
+
+		/*
+			イベントハンドラー
+		*/
+		//  すべて
+		$(document).on('click',function(e) {
+		 opration_flag=true;
+		});
+
+
+		/*
+		// end 機器操作インデックス
+		*/
+
+		/*------------------------------
+		　家電操作
+		--------------------------------*/
+
+
+		// カーテン
+		$(document).on('click','#curtain_open',function(e) {
+			if(rep_hits_flag){
+				console.log("連打禁止");
+				return ;
+			}
+    		hits_flag();
+			sendIRkit_dbl_command("CURTAIN_OPEN",2000);
+			console.log("curtain_open");
+		});
+
+		$(document).on('click','#curtain_close',function(e) {
+			if(rep_hits_flag){
+				console.log("連打禁止");
+				return ;
+			}
+    		hits_flag();
+			sendIRkit_dbl_command("CURTAIN_CLOSE",2000);
+			console.log("curtain_close");
+		});
+
+
+
+		//機器操作インデクス
+		$(document).on('click','.op_index',function(e) {
+            if(rep_hits_flag){
+				console.log("連打禁止");
+				return ;
+			}
+    		hits_flag();
+			console.log("op_index");
+            location.href="kiki_menu.html";
+		});
+
+
+    	$(document).on('click',function(e) {
+		});
+
+
+    });
+
+  </script>
+</head>
+
+<body>
+	<div style="position: relative;margin: 0px; padding: 0px;width:100%;height: auto;">
+	    <img border="0" src="./hdimages/bk_curtain.png"  style="position: absolute;top:0;left:0">
+
+	    <img border="0" src="./hdimages/btn_curtain_open.png" id="curtain_open"  alt="カーテン開ける" class="btn_tap_anim btn_tap_sound" style="position:absolute;left:462px;top:567px;" >
+
+	    <img border="0" src="./hdimages/btn_curtain_close.png" id="curtain_close" alt="カーテン閉める" class="btn_tap_anim btn_tap_sound" style="position:absolute;left:462px;top:978px;" >
+
+        <img border="0" src="./hdimages/btn_kiki_return.png" alt="戻る" class="btn_tap_anim btn_tap_sound op_index" style="position:absolute;left:145px;top:1424px;">    	</a>
+
+	</div>
+
+</body>
+</html>

@@ -1,0 +1,279 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta http-equiv="Content-Security-Policy" content="default-src * data:; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
+  <script src="components/loader.js"></script>
+  <script src="lib/onsenui/js/onsenui.min.js"></script>
+
+  <link rel="stylesheet" href="components/loader.css">
+  <link rel="stylesheet" href="lib/onsenui/css/onsenui.css">
+  <link rel="stylesheet" href="lib/onsenui/css/onsen-css-components.css">
+  <link rel="stylesheet" href="css/style.css">
+
+
+    <script src="./js/underscore-min.js"></script>
+    <script src="./js/jquery-1.11.3.min.js"></script>
+    <script src="./js/backbone-min.js"></script>
+    <script src="./js/backbone.localStorage.js"></script>
+
+    <script src="./js/irkit.js"></script>1
+
+    <script src="./js/ncmb.min.js"></script>1
+    <style>
+	.command_test	{
+		font-size:1.8em;
+	}
+	</style>
+
+  <script>
+    ons.ready(function() {
+      console.log("Onsen UI is ready!");
+
+      //var irkit= new IrKitParam();
+      //      console.log(irkit);
+	  // すでにある要素を削除する
+	  var list = $("#list");
+	  list.children().remove();
+	  // ローカルストレージに保存された値すべてを要素に追加する
+	  var key, value, html = [];
+	  var str ="" ;
+	  for(var i=0, len=localStorage.length; i<len; i++) {
+	    key = localStorage.key(i);
+
+		if(!(key.indexOf("SCEN")>=0 || key.indexOf("IRK")>=0 || key.indexOf("IP")>=0 || key.indexOf("CLIE")>=0) ){
+		    value = localStorage.getItem(key);
+		    var param;
+		    try {
+		        param=  JSON.parse(value);
+			    console.log(value);
+		        console.error("OK");
+
+				str  = str+  "<div data-command=\"" + key + "\" title=\""  +   escape(param.PARAM)+     "\"  >";
+
+				str  = str+ "<p><button class=\"IR_COMMAND\"" + "data-command=\"" + key + "\"  style=\"font-size:1.8em\"  >";
+			    str  = str + param.NAME + ":(" + key +")";	
+
+				str  = str +"</button></p>";
+				str  = str +"</div>";
+
+
+		        } catch (e) {
+			        console.error("erro");
+		        }
+
+		} else{
+			        console.log("e:"+key);
+		}
+
+	  }
+    list.html(str); 
+
+	//テストコマンド
+    	$(document).on('click','.IR_COMMAND',function(e) {
+		 console.log( $(this).attr('data-command') );
+		var n= $(this).attr('data-command');
+		if(n.indexOf("_DOUBLE_")>=0 ) {
+	  		 sendIRkit_dbl_command(n);
+			} else {
+	  		 sendIRkit_command(n);
+			}			
+
+        });
+
+
+
+	//
+	
+    	$(document).on('click','#DATA_CLEAR',function(e) {
+		  // データクリア
+		localStorage.clear();
+		 alert("全データをクリア");
+        $("#IRKit1").val("");
+        $("#IRKit2").val("");
+        console.log("AllClear");
+        });
+
+
+
+/*
+  var outer = document.getElementById('hoge');
+  
+  var btn1 = document.createElement('ons-button');
+  btn1.innerHTML = 'without compile()';
+  outer.appendChild(btn1);
+  
+  var btn2 = document.createElement('ons-button');
+  btn2.innerHTML = 'with compile()';
+  outer.appendChild(btn2);
+*/
+	 	//IRKIT IP
+		$("#IRKit1").val(getIRkit_IP("1"));
+		$("#IRKit2").val(getIRkit_IP("2"));
+
+
+
+    	$(document).on('click','#IP_UPDATE',function(e) {
+		  // IPアドレス変更
+			console.log("IP_UPDATE"+ $("#IRKit1").val());
+    		console.log("IP_UPDATE"+ $("#IRKit2").val());
+        	console.log( $("#IRKit2"));
+			setIRkit_IP("1",$("#IRKit1").val());
+			setIRkit_IP("2",$("#IRKit2").val());
+        });
+
+    	$(document).on('click','#DATA_UPDATE',function(e) {
+		  // IPアドレス変更
+        var ncmb = new NCMB("0ce7cfdb2fed18bd944053b9bf79beef74f3c75a6068ff6f805564518aa970a4","996ca0646cd9fccc63b95adb74b06f4f1c11cf4b6da21e12243bf961d5fee46b");
+        var Miruene = ncmb.DataStore("miruene");
+		var err_flg =false;
+            Miruene.order("date", true)
+                .limit(120)
+                .fetchAll()
+                .then(function(results){
+                    console.log("Successfully retrieved " + results.length );
+                    for (var i = 0; i < results.length; i++) {
+                        var object = results[i];
+                        console.log(object.date.iso);
+		                localStorage.setItem(object.KEY,object.VALUE);
+		                console.log(object.KEY + object.VALUE);
+                        }
+                })
+                .catch(function(err){
+				  err_flg= true;
+                  console.log(err);
+                });
+			if(err_flg){
+				 alert("データ取得に失敗！！");
+			} else{
+				 alert("データを更新");
+			}
+        });
+
+
+    	$(document).on('click','#DATA_CLEAR',function(e) {
+		  // データクリア
+		localStorage.clear();
+		 alert("全データをクリア");
+        $("#IRKit1").val("");
+        $("#IRKit2").val("");
+        console.log("AllClear");
+        });
+
+        });
+
+  </script>
+</head>
+<body>
+  <ons-page>
+  
+   
+  <p></p>
+      <div class="center" id="toolbar-title">  <h1>設定！</h1></div>
+  
+<div style="text-align: center">
+     <p> 初回に「赤外線データをクラウドからダウンロード」します(要インターネット)。ローカルIPアドレスでIRKitに接続するにはIPアドレスを指定します。
+     </p>
+
+     <p> 初期状態にするには「全データクリア」ボタンを押してください。
+     </p>
+
+    
+</div> 
+  
+  
+  
+<div style="text-align: center; font-size: 1.4em;">
+<p>
+		     IrKit1 IP:<input type="text"  name="IRKit1" id="IRKit1" value="" style=" font-size: 1.8em;" placeholder="IrKit のIPアドレスを入力してください">
+</p>
+<p>
+		     IrKit2 IP:<input type="text"  name="IRKit2" id="IRKit2" value="" style=" font-size: 1.8em;" placeholder="IrKit のIPアドレスを入力してください">
+<p>
+
+    <p><ons-button id="IP_UPDATE"><img border="0" src="./images/local_ip_button.png"  class="btn_tap_anim" width=90% alt="IPアドレス更新"></ons-button></p>
+    
+</div> 
+
+<p>
+<hr>
+</p>
+
+<p>
+</p>
+
+
+<div style="text-align: center">
+     <p>
+			赤外線データをクラウドからダウンロードする(※インターネット接続ができること)
+     </p>
+    <p><ons-button id="DATA_UPDATE"><img border="0" src="./images/data_update_button.png"  class="btn_tap_anim" width=90% alt="IPアドレス更新"></ons-button></p>
+    <div id="my-param"></div>
+
+
+		<ons-list>
+		  <ons-list-item ons-lazy-repeat="MyDelegate">
+
+		  </ons-list-item>
+		</ons-list>    
+    
+    
+</div> 
+
+<p>
+<hr>
+</p>
+
+<p>
+</p>
+
+
+<div style="text-align: center">
+     <p>
+			全データを初期化します
+     </p>
+    <p><ons-button id="DATA_CLEAR"><img border="0" src="./images/all_clear_button.png"  class="btn_tap_anim" width=80% alt="全データクリア"></ons-button></p>
+    
+</div> 
+
+<p>
+<hr>
+</p>
+
+<p>
+</p>
+
+
+<div style="text-align: center">
+	<ons-button onclick="window.location.href='index.html';" >
+	 <img border="0" src="./images/m_button_topback.png"  class="btn_tap_anim" width=95% alt="TOPに戻る">
+	</ons-button>
+
+</div> 
+
+<p>
+</p>
+<p>
+</p>
+
+<p>
+<hr>
+</p>
+<h1>コマンド送信テスト </h2>
+<sectionstyle="text-align: center">
+	<h2 >
+	<div id="list" >
+	</div> 
+	<h2>
+
+<section>
+
+<hr>
+
+ 
+ 
+  </ons-page>
+
+</body>
+</html>

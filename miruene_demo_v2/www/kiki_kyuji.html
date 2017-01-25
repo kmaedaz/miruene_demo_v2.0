@@ -1,0 +1,86 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+  <!-- 機器の操作 -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="Content-Security-Policy" content="default-src * data:; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
+
+    <script src="./js/jquery-1.11.3.min.js"></script>
+    <!-- 効果音-->
+    <script src="./js/ion.sound.min.js"></script>
+    <script src="./js/sound.js"></script>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <script src="js/irkit.js"></script>
+    <script src="js/scenario.js"></script>
+
+
+    <link rel="stylesheet" href="css/anime_btn.css">
+    <script src="js/btn.js"></script>
+
+    <title>機器の操作</title>
+    
+
+    <style>
+    </style>
+
+  <script>
+      var opration_flag = true; //操作されたかチェック
+      var rep_hits_flag = true;
+        function  opration_check() {
+             if(!opration_flag){
+                console.log("index");
+                location.href="kiki_menu.html";
+			 } else{
+				console.log("index");
+			 }
+			 opration_flag=false;
+		}
+
+
+	$(document).ready(function(){
+		console.log("Onsen UI is ready!");
+        setBtnAnim(); 
+        setBtnSound();
+		/*------------------------------
+		　家電操作
+		--------------------------------*/
+
+		// pet food 
+		$(document).on('click','#pet_feeder',function(e) {
+			sendIRkit_command("PET_FEEDER_PLAY");
+			console.log("pet_feeder");
+		});
+
+		//機器操作インデクス
+		$(document).on('click','.op_index',function(e) {
+			console.log("op_index");
+            sendIRkit_init_command();
+            location.href = "kiki_menu.html";
+		});
+
+    	$(document).on('click',function(e) {
+		});
+
+
+    });
+
+  </script>
+</head>
+
+<body>
+
+<!- 
+自動給餌器 操作
+-->
+<div style="position: relative;margin: 0px; padding: 0px;width:100%;height: auto;">
+    <img border="0" src="./hdimages/bk_kyuji.png"  style="position: absolute;top:0;left:0">
+
+    <img border="0" src="./hdimages/btn_kyuji_ageru.png" id="pet_feeder"  alt="エサを与える" class="btn_tap_anim btn_tap_sound" style="position:absolute;left:493px;top:657px" >
+
+    <img border="0" src="./hdimages/btn_kiki_return.png" alt="戻る" class="btn_tap_anim btn_tap_sound op_index" style="position:absolute;left:145px;top:1424px;">    	</a>
+</div>
+</body>
+</html>

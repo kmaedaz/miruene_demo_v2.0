@@ -1,0 +1,55 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+  <!-- 機器の操作 -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="Content-Security-Policy" content="default-src * data:; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
+
+    <script src="./js/jquery-1.11.3.min.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+
+    <script src="js/irkit.js"></script>
+    <script src="js/scenario.js"></script>
+
+    <script src="js/ion.sound.min.js"></script>
+    <link rel="stylesheet" href="css/anime_btn.css">
+    <script src="js/btn.js"></script>
+
+    <title>機器の操作(テレビ) </title>
+
+    <style>
+    </style>
+
+  <script>
+
+   $(document).ready(function(){
+		console.log("Onsen UI is ready!");
+        setBtnAnim(); 
+  		//
+		const OP_TIME = 200; //操作画面への遷移
+		const NEXTPAGE_TIME = 3400; //操作画面への遷移
+		const NO_OPRATIN_TIME = 30000; //何もしなければ操作画面への遷移
+		setTimeout(	function (){
+			location.href=("kiki_tv.html");
+		} , NEXTPAGE_TIME);
+
+    });
+
+  </script>
+</head>
+
+<body>
+
+ <!-- 
+テレビ
+ 説明 
+ -->
+    <div style="position: relative;margin: 0px; padding: 0px;width:100%;height: auto;">
+        <div style="position: relative;margin: 0px; padding: 0px;width:100%;height: auto;">
+            <img border="0" src="./hdimages/bk_pre_tv.png" width="2736" height="1824" style="position: absolute;top:0;left:0;">
+            <img border="0" src="./hdimages//red_pre_tv.png" width="2736" height="1824" style="position: absolute;top:0;left:0;">
+        </div>
+    </div>
+</body>
+</html>

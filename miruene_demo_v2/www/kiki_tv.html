@@ -1,0 +1,194 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+  <!-- 機器の操作 -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="Content-Security-Policy" content="default-src * data:; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
+
+
+    <script src="./js/jquery-1.11.3.min.js"></script>
+    <!-- 効果音-->
+    <script src="./js/ion.sound.min.js"></script>
+    <script src="./js/sound.js"></script>
+
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <script src="js/irkit.js"></script>
+    <script src="js/scenario.js"></script>
+
+
+    <link rel="stylesheet" href="css/anime_btn.css">
+    <script src="js/btn.js"></script>
+
+    <title>機器の操作(テレビ)</title>
+    
+
+
+
+  <script>
+        var opration_flag =  true; //操作されたかチェック
+        const DEFAULT_TEMPERATURE=25;// エアコン初期温度
+        const DEFAULT_HUMD =50 ;
+        function  use_vibrate() {
+            navigator.vibrate(100);
+        }
+        function  opration_check() {
+             if(!opration_flag){
+                console.log("index");
+    			// 家電機器初期設定
+                sendIRkit_init_command();
+                scenario_exec("SCENARIO_ALLT_RESET");
+				var val = DEFAULT_TEMPERATURE; //エアコン温度表示
+                location.href="kiki_menu.html";
+			 } else{
+				console.log("index");
+			 }
+			 opration_flag=false;
+		}
+
+
+        $(document).ready(function () {
+            {
+                console.log("is ready!");
+                setBtnAnim();
+                setBtnSound();
+                //
+                const OP_TIME = 200; //操作画面への遷移
+                const NEXTPAGE_TIME = 3400; //操作画面への遷移
+                const NO_OPRATIN_TIME = 30000; //何もしなければ操作画面への遷移
+
+                var temperature_value = DEFAULT_TEMPERATURE; //既定値
+                var aircon_temp_txt1 = $("#aircon_temp_txt"); //エアコン温度表示
+                var purifier_hum_txt1 = $("#purifier_hum_txt"); //湿度表示
+                var humd_value = DEFAULT_HUMD; //既定値
+                purifier_hum_txt1.innerHTML = humd_value;
+                aircon_temp_txt1.innerHTML = temperature_value;
+
+                var light_bright = 3;  //明るさ
+
+                var humidity_arry = { "50": "13-parts5ax475y720.png", "60": "13-parts5bx475y720.png", "70": "13-parts5cx475y720.png", "80": "13-parts5dx475y720.png" };
+
+                // 一定期間操作がなければ　機器操作index
+
+                setInterval(opration_check(), NO_OPRATIN_TIME); //
+
+
+                // clearInterval(opration_check);
+
+                sendIRkit_init_command();
+                scenario_exec("SCENARIO_ALLT_RESET");
+
+                var rep_hits_flag = true; //操作されたかチェック
+
+                function hits_flag(v) {
+                    rep_hits_flag = true;
+                    use_vibrate();
+                    setTimeout(function () {
+                        console.log("kye enabled");
+                        rep_hits_flag = false;
+                    }, 1500);
+                }
+
+                /*
+                    イベントハンドラー
+                */
+                //  すべて
+                $(document).on('click', function (e) {
+                    opration_flag = true;
+                });
+
+
+                /*------------------------------
+                　家電操作
+                --------------------------------*/
+
+                //TV
+                $(document).on('click', '#tv_power', function (e) {
+                    if (rep_hits_flag) {
+                        console.log("連打禁止");
+                        return;
+                    }
+                    hits_flag();
+
+                    ion.sound.play("click1");
+                    sendIRkit_command("TV_ON");
+                    //sendIRkit_dbl_command("TV_ON",2000);
+                    console.log("tv_power");
+                });
+
+                $(document).on('click', '#tv_ch_up', function (e) {
+                    if (rep_hits_flag) {
+                        console.log("連打禁止");
+                        return;
+                    }
+                    hits_flag();
+                    sendIRkit_command("TV_CH_UP");
+                    console.log("tv_ch_up");
+                });
+
+                $(document).on('click', '#tv_ch_down', function (e) {
+                    if (rep_hits_flag) {
+                        console.log("連打禁止");
+                        return;
+                    }
+                    hits_flag();
+                    sendIRkit_command("TV_CH_DOWN");
+                    console.log("tv_ch_down");
+                });
+
+                $(document).on('click', '#tv_chidegi', function (e) {
+                    if (rep_hits_flag) {
+                        console.log("連打禁止");
+                        return;
+                    }
+                    hits_flag(this);
+                    sendIRkit_command("TV_CHIDEGI");
+                    console.log("tv_chidegi");
+                });
+
+                $(document).on('click', '#tv_bs', function (e) {
+                    if (rep_hits_flag) {
+                        console.log("連打禁止");
+                        return;
+                    }
+                    hits_flag();
+                    sendIRkit_command("TV_BS");
+                    console.log("tv_bs");
+                });
+                //機器操作インデクス
+                $(document).on('click', '.op_index', function (e) {
+                    location.href = "kiki_menu.html";
+                });
+
+                $(document).on('click', function (e) {
+                });
+
+
+            }
+        });
+
+  </script>
+</head>
+
+<body>
+
+
+        <div style="position: relative;margin: 0px; padding: 0px;width:100%;height: auto;">
+		    <img border="0" src="./hdimages/bk_tv.png"  style="position: absolute;top:0;left:0">
+
+		    <img border="0" src="./hdimages/btn_tv_power.png" id="tv_power"  alt="電源" class="btn_tap_anim btn_tap_sound" style="position:absolute;left:389px;top:730px" >
+
+		    <img border="0" src="./hdimages/btn_tv_chup.png" id="tv_ch_up"  alt="チャンネル上" class="btn_tap_anim btn_tap_sound"  style="position:absolute;left:1121px;top:730px;" >
+
+		    <img border="0" src="./hdimages/btn_tv_chdown.png"  id="tv_ch_down"  alt="チャンネル下" class="btn_tap_anim btn_tap_sound" style="position:absolute;left:1121px;top:1010px;" >
+
+		    <img border="0" src="./hdimages/btn_tv_chideji.png" id="tv_chidegi" alt="地デジ" class="btn_tap_anim btn_tap_sound" style="position:absolute;left:1853px;top:486px" >
+
+		    <img border="0" src="./hdimages/btn_tv_bs.png"   id="tv_bs"  alt="BS" class="btn_tap_anim btn_tap_sound" style="position:absolute;left:1853px;top:942px;" >
+
+            <img border="0" src="./hdimages/btn_kiki_return.png" alt="戻る" class="btn_tap_anim btn_tap_sound op_index" style="position:absolute;left:145px;top:1424px;">    	</a>
+    
+</body>
+</html>

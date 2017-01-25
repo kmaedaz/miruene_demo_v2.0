@@ -1,0 +1,389 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <!-- シナリオ -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="Content-Security-Policy" content="default-src * data:; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
+    <!script src="components/loader.js"><!/script>
+    <script src="lib/onsenui/js/onsenui.min.js"></script>
+    
+    <link rel="stylesheet" href="components/loader.css">
+    <link rel="stylesheet" href="lib/onsenui/css/onsenui.css">
+    <link rel="stylesheet" href="lib/onsenui/css/onsen-css-components.css">
+    <script src="./js/underscore-min.js"></script>
+    <script src="./js/jquery-1.11.3.min.js"></script>
+    <script src="./js/backbone-min.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/anime_btn.css">
+    <script src="js/btn.js"></script>
+    <script src="js/irkit.js"></script>
+
+    <script src="js/scenario.js"></script>
+
+<style>
+
+    #aircon_panel{
+        position: relative;
+        width:80%;
+    }
+
+    #aircon_base{
+        position: relative;
+    }
+
+    
+    
+    #aircon_up {
+        position: absolute;
+        top: 34px;
+        Left: 390px;
+    }
+    
+    #aircon_down {
+        position: absolute;
+        top: 104px;
+        Left: 390px;
+    }
+    #aircon_temp_txt {
+        position: absolute;
+        font-size: 1.8em;
+        font-weight: bold;
+        top: 64px;
+        Left: 124px;
+    }
+    
+
+    //TV
+	#tv_power_base{
+	    position: relative;
+	}
+
+	  #tv_power {
+    position: absolute;
+    top: 170px;
+    Left: 68px;
+	}
+
+	#tv_ch_base {
+	    position: relative;
+	}
+
+
+	 #tv_ch_up{
+        position: absolute;
+        top: 140px;
+        Left: 68px;
+        
+	}
+
+	 #tv_ch_down{
+        position: absolute;
+        top: 360px;
+        Left: 68px;
+	}
+
+	</style>
+
+
+  <script>
+    var opration_flag =  false; //操作されたかチェック
+	var scenario_post_str ;
+    	function  opration_check(myNavigator) {
+			 if(!opration_flag){
+				console.log("index");
+    			console.log("scenario_post_str:" +scenario_post_str);
+
+                scenario_exec(scenario_post_str);
+				// 家電機器初期設定
+                sendIRkit_init_command();
+                myNavigator.resetToPage("exp_index.html");
+			 } else{
+				console.log("index");
+			 }
+			 opration_flag=false;
+		}
+
+
+        var rep_hits_flag =  false; //連打防止
+
+    	function  hits_flag() {
+			rep_hits_flag= true;
+		    setTimeout( function (){
+				console.log("disabled");
+				hits_flag =false ;
+		    } , 1000); 			
+		}
+
+
+    (function ($) {
+        $('#returnhomea').on('show', function(){
+            this.play();
+            console.log("aaa");
+        });
+        $('#returnhomeb').on('show', function(){
+            this.play();
+            console.log("cccc");
+        });
+
+    })(jQuery);
+
+    ons.ready(function() {
+		console.log("Onsen UI is ready!");
+		//
+		const OP_TIME = 1300; //操作画面への遷移
+		const NEXTPAGE_TIME = 3000; //操作画面への遷移
+		const DEFAULT_TEMPERATURE=26;// 初期温度
+    	const NO_OPRATIN_TIME = 38000; //何もしなければ操作画面への遷移
+		const RETURN_HOME_LATTER_HALF =12000 ;//･帰宅後半の動画開始
+
+        setBtnAnim();	
+
+		/*
+			イベントハンドラー
+		*/
+    	// 一定期間操作がなければ　機器操作index
+    	
+		setInterval("opration_check(myNavigator)",NO_OPRATIN_TIME); //
+    	//  すべて
+        scenario_exec("SCENARIO_ALLT_RESET");
+
+        $(document).on('click',function(e) {
+		 opration_flag=true;
+		});
+
+
+        sendIRkit_init_command();
+
+        /*
+		// begin 機器操作インデックス
+		*/
+		$(document).on('click','#scene_detail_heatstroke',function(e) {
+			setTimeout(	function (){
+					scenario_post_str ="SCENARIO_POST_HEATPROTECT";
+                    scenario_exec("SCENARIO_HEATPROTECT");
+                    myNavigator.resetToPage("scene_detail_heatstroke.html");  //熱中症予防
+                    } , OP_TIME);
+			console.log("scene_detail_heatstroke");
+		});
+
+
+		$(document).on('click','#scene_detail_crime',function(e) {
+			setTimeout(	function (){
+				scenario_post_str ="SCENARIO_POST_CRIMEDEFEND";
+                scenario_exec("SCENARIO_CRIMEDEFEND");
+                myNavigator.resetToPage("scene_detail_crime.html");  //防犯
+			} , OP_TIME);
+			console.log("scene_detail_heatstroke");
+		});
+
+		//起床
+		$(document).on('click','#scene_detail_wakeup',function(e) {
+			setTimeout(	function (){
+				scenario_post_str ="SCENARIO_POST_WAKEUP";
+             　　scenario_exec("SCENARIO_WAKEUP");
+                myNavigator.resetToPage("scene_detail_wakup.html");  //起床
+	
+			} , OP_TIME);
+			console.log("scene_detail_wakup");
+		});
+
+		//外出
+		$(document).on('click','#scene_detail_outing',function(e) {
+				scenario_post_str ="SCENARIO_POST_OUTING";
+				setTimeout(	function (){
+                scenario_exec("SCENARIO_OUTING");
+                myNavigator.resetToPage("scene_detail_outing.html");  //外出
+
+			} , OP_TIME);
+			console.log("scene_detail_outing");
+		});
+
+
+		//帰宅
+		$(document).on('click','#scene_detail_return',function(e) {
+            setTimeout(	function (){
+				scenario_post_str ="SCENARIO_POST_RETURNING";
+				myNavigator.resetToPage("scene_detail_return_a.html");  //帰宅前半
+                 scenario_exec("SCENARIO_RETURNING",myNavigator);
+                    setTimeout(    function (){
+        				myNavigator.resetToPage("scene_detail_return_b.html", {animation: 'fade'});  //帰宅後半B
+                    } , RETURN_HOME_LATTER_HALF);
+
+            } , OP_TIME);
+			console.log("scene_detail_outing");
+		});
+
+		/*
+		// end 機器操作インデックス
+		*/
+
+		//シナリオインデクス
+		$(document).on('click','.exp_index',function(e) {
+            sendIRkit_init_command();
+             scenario_exec(scenario_post_str);
+            console.log("exp_index");
+			myNavigator.resetToPage("exp_index.html");
+		});
+
+
+    });
+
+  </script>
+
+</head>
+<body>
+  <!-- First navigation component: Navigator. This will remain always on top of the app. -->
+  <ons-navigator id="myNavigator" var="myNavigator" page="exp_index.html" >
+  </ons-navigator>
+ <!-- 
+
+  -->
+  <ons-template id="exp_index.html">
+
+    <div style="position: relative;margin: 0px; padding: 0px;width:100%;height: auto;">
+            <img border="0" src="./images/03-back.png"  style="top:0;left:0;width:1281px;">
+            <img border="0" src="./images/03-parts1x368y329.png"     class="btn_tap_anim" id="scene_detail_heatstroke"   style="position: absolute;left:254px;top:217px;width:781px;" alt="熱中症予防">
+        	<img border="0" src="./images/03-parts2x368y472.png"     class="btn_tap_anim" id="scene_detail_crime"         style="position: absolute;left:254px;top:312px;width:781px;" alt="防犯">
+    		<img border="0" src="./images/03-parts3x368y615.png"     class="btn_tap_anim" id="scene_detail_wakeup"        style="position: absolute;left:254px;top:406px;width:781px;" alt="起床">
+    		<img border="0" src="./images/03-parts4x368y758.png"      class="btn_tap_anim" id="scene_detail_outing"         style="position: absolute;left:254px;top:500px;width:781px;" alt="外出">
+    		<img border="0" src="./images/03-parts5x368y900.png"      class="btn_tap_anim" id="scene_detail_return"         style="position: absolute;left:254px;top:594px;width:781px;" alt="帰宅">
+    		<a href="./index.html" >
+    		<img border="0" src="./images/03-parts6x43y999.png" class="btn_tap_anim"    style="position: absolute;left:27px;top:659px;width:144px" alt="トップに戻る">
+    		</a>
+	</div>
+    
+</ons-template>
+
+
+
+ <!-- 
+　熱中症予防
+	 映像終了後（映像は静止状態）に温度計がアップ、その3秒後にエアコンがON、３秒後にカーテンが閉まる。
+	３０秒間操作がない場合、初期設定され、シナリオTOPに戻る。
+   -->
+  <ons-template id="scene_detail_heatstroke.html">
+       <ons-page>
+        <div style="position: relative;margin: 0px; padding: 0px;width:100%;height: auto;">
+
+                    <video src="./movie/heatstroke_161227.mp4" autoplay  preload="none" class="movie_field" > </video>
+                    <img src="./images/sn_house.png" class="photo scene_frame small_view "  >
+                    <img src="./images/sn_aircom.png" class="scene_frame blink_anime small_view scenario-aircom" >
+                    <img src="./images/sn_curtain.png" class="scene_frame blink_anime small_view scenario-cur" >
+                    <img border="0" src="./images/18-nechu-backmovie.png"  style="position: absolute;top:0;left:0;width:1280px" >
+            	<div class="scene_top_button">
+    				<img border="0" src="./images/18-nechu-parts1x1650y995.png" class="btn_tap_anim exp_index" style="position: fixed;left: 1110px;top:660px;width:145px"  alt="機器の操作に戻る">
+    			</div>
+        </div>
+    </ons-page>
+  </ons-template>
+
+ <!-- 
+　　　防犯シナリオ
+	映像終了後（映像は静止状態）に演出照明がOFF、５秒後にカーテンが閉まり、
+	
+	 -->
+  <ons-template id="scene_detail_crime.html">
+       <ons-page>
+        <div style="position: relative;margin: 0px; padding: 0px;width:100%;height: auto;">
+                    <video src="./movie/crime_161227.mp4" autoplay  preload="none" class="movie_field" > </video>
+                    <img src="./images/sn_house.png" class="photo scene_frame small_view "  >
+                    <img src="./images/sn_shomei.png" class="scene_frame blink_anime small_view scenario-shomei" >
+                    <img src="./images/sn_curtain.png" class="scene_frame blink_anime small_view scenario-cur" >
+                    <img border="0" src="./images/20-bohan-backmovie.png"  style="position: absolute;top:0;left:0;width:1280px" >
+            	<div class="scene_top_button">
+    				<img border="0" src="./images/18-nechu-parts1x1650y995.png" class="btn_tap_anim exp_index" style="position: fixed;left: 1110px;top:660px;width:145px"  alt="機器の操作に戻る">
+    			</div>
+        </div>
+    </ons-page>
+  </ons-template>
+
+
+
+ <!-- 
+	起床	
+	朝起きると、オーディオがオンになり、
+	カーテンが開きます。
+	映像終了後（映像は静止状態）に演出照明がOFF、５秒後にカーテンが閉まり、
+	 -->
+  <!-- 起床シナリオ-->     	 
+  <ons-template id="scene_detail_wakup.html">
+	   <ons-page>
+        <div style="position: relative;margin: 0px; padding: 0px;width:100%;height: auto;">
+					<video src="./movie/wakeup_161227.mp4" autoplay  preload="none" class="movie_field" > </video>
+					<img src="./images/scene_home.png" class="photo scene_frame small_view "  >
+					<img src="./images/sn_audio.png" class="scene_frame blink_anime small_view scenario-cd" >
+					<img src="./images/sn_curtain.png" class="scene_frame blink_anime small_view scenario-cur" >
+            	    <img border="0" src="./images/19-backmovie.png"  style="position: absolute;top:0;left:0;width:1280px">
+               <div class="scene_top_button">
+    				<img border="0" src="./images/18-nechu-parts1x1650y995.png" class="btn_tap_anim exp_index" style="position: fixed;left: 1110px;top:660px;width:145px"  alt="機器の操作に戻る">
+    			</div>
+        </div>
+    </ons-page>
+  </ons-template>
+
+
+  <!-- 
+    外出
+	朝起きると、オーディオがオンになり、
+	カーテンが開きます。
+	映像終了後（映像は静止状態）に演出照明がOFF、５秒後にカーテンが閉まり、
+	 -->
+
+  <ons-template id="scene_detail_outing.html">
+	   <ons-page>
+        <div style="position: relative;margin: 0px; padding: 0px;width:100%;height: auto;">
+			<video src="./movie/goout_161227.mp4" autoplay  preload="none" class="movie_field" > </video>
+			<img src="./images/scene_home.png" class="photo scene_frame small_view "  >
+    		<img src="./images/sn_aircom.png"  class="scene_frame blink_anime small_view scenario-aircom" >
+			<img src="./images/sn_shomei.png"  class="scene_frame blink_anime small_view scenario-shomei" >
+    	    <img border="0" src="./images/21-backmovie.png"  style="position: absolute;top:0;left:0;width:1280px">
+            <div class="scene_top_button">
+            	<img border="0" src="./images/18-nechu-parts1x1650y995.png" class="btn_tap_anim exp_index" style="position: fixed;left: 1110px;top:660px;width:145px"  alt="機器の操作に戻る">
+            </div>
+        </div>
+    </ons-page>
+  </ons-template>
+   <!-- 
+	帰宅
+	朝起きると、オーディオがオンになり、
+	カーテンが開きます。
+	映像終了後（映像は静止状態）に演出照明がOFF、５秒後にカーテンが閉まり、
+	 -->
+  <ons-template id="scene_detail_return_a.html">
+       <ons-page>
+        <div style="position: relative;margin: 0px; padding: 0px;width:100%;height: auto;">
+                    <video src="./movie/returnhome_161227a.mp4" autoplay  preload="none" class="movie_field" style="width:1280px;" > </video>
+                    <img src="./images/scene_home.png" class="photo scene_frame small_view "  >
+                    <img src="./images/sn_aircom.png" class="scene_frame blink_anime small_view scenario-aircom" >
+                    <img src="./images/sn_shomei.png"  class="scene_frame blink_anime small_view scenario-shomei" >
+                    <img border="0" src="./images/22-backmovie.png"  style="position: absolute;top:0;left:0;width:1280px">
+               <div class="scene_top_button">
+    				<img border="0" src="./images/18-nechu-parts1x1650y995.png" class="btn_tap_anim exp_index" style="position: fixed;left: 1110px;top:660px;width:145px"  alt="機器の操作に戻る">
+    			</div>
+        </div>
+    </ons-page>
+  </ons-template>
+
+    
+   <!-- 
+    帰宅
+	朝起きると、オーディオがオンになり、
+	カーテンが開きます。
+	映像終了後（映像は静止状態）に演出照明がOFF、５秒後にカーテンが閉まり、
+	 -->
+  <ons-template id="scene_detail_return_b.html">
+       <ons-page>
+        <div style="position: relative;margin: 0px; padding: 0px;width:100%;height: auto;">
+							<video src="./movie/returnhome_161227b.mp4" autoplay  preload="none" class="movie_field" style="width:1280px;"> </video>
+		            	    <img border="0" src="./images/22-backmovie.png"  style="position: absolute;top:0;left:0;width:1280px">
+               <div class="scene_top_button">
+    				<img border="0" src="./images/18-nechu-parts1x1650y995.png" class="btn_tap_anim exp_index" style="position: fixed;left: 1110px;top:660px;width:145px"  alt="機器の操作に戻る">
+    			</div>
+        </div>
+    </ons-page>
+  </ons-template>
+   
+    
+</body>
+</html>

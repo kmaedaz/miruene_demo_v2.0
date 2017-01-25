@@ -1,0 +1,118 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+  <!-- シナリオ -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="Content-Security-Policy" content="default-src * data:; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
+    <script src="./js/jquery-1.11.3.min.js"></script>
+    <!-- 効果音-->
+    <script src="./js/ion.sound.min.js"></script>
+    <script src="./js/sound.js"></script>
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/anime_btn.css">
+    <script src="js/btn.js"></script>
+    <script src="js/video.js"></script>
+
+    <script src="js/irkit.js"></script>
+
+    <script src="js/scenario.js"></script>
+
+	<style>
+
+
+	</style>
+
+
+  <script>
+    var opration_flag =  false; //操作されたかチェック
+	var scenario_post_str ;
+    	function  opration_check() {
+			 if(!opration_flag){
+				console.log("index");
+    			console.log("scenario_post_str:" +scenario_post_str);
+
+                scenario_exec(scenario_post_str);
+				// 家電機器初期設定
+                sendIRkit_init_command();
+                myNavigator.resetToPage("exp_index.html");
+			 } else{
+				console.log("index");
+			 }
+			 opration_flag=false;
+		}
+
+
+        var rep_hits_flag =  false; //連打防止
+
+    	function  hits_flag() {
+			rep_hits_flag= true;
+		    setTimeout( function (){
+				console.log("disabled");
+				hits_flag =false ;
+		    } , 1000); 			
+		}
+
+
+
+    $(document).ready(function(){
+		console.log("Onsen UI is ready!");
+		//
+		const OP_TIME = 1300; //操作画面への遷移
+		const NEXTPAGE_TIME = 3000; //操作画面への遷移
+		const DEFAULT_TEMPERATURE=26;// 初期温度
+    	const NO_OPRATIN_TIME = 38000; //何もしなければ操作画面への遷移
+		const RETURN_HOME_LATTER_HALF =12000 ;//･帰宅後半の動画開始
+
+        setBtnAnim();	
+
+		/*
+			イベントハンドラー
+		*/
+    	// 一定期間操作がなければ　機器操作index
+    	
+		setInterval("opration_check()",NO_OPRATIN_TIME); //
+    	//  すべて
+        scenario_exec("SCENARIO_ALLT_RESET");
+
+
+
+
+		//シナリオインデクス(戻る)
+		$(document).on('click','.exp_index',function(e) {
+	           sendIRkit_init_command();
+             scenario_exec(scenario_post_str);
+            console.log("exp_index");
+			myNavigator.resetToPage("exp_index.html");
+		});
+
+
+    });
+
+  </script>
+
+</head>
+<body>
+
+
+ <!-- 
+　熱中症予防
+	 映像終了後（映像は静止状態）に温度計がアップ、その3秒後にエアコンがON、３秒後にカーテンが閉まる。
+	３０秒間操作がない場合、初期設定され、シナリオTOPに戻る。
+   -->
+
+<div style="position: relative;margin: 0px; padding: 0px;width:100%;height: auto;">
+        <video src="./movie/nechu.mp4"   preload="none" class="movie_field" autoplay id="video" > </video>
+        <img src="./hdimages/bk_house.png" class="photo scene_frame small_view "  >
+        <img src="./hdimages/red_scn_curtain.png" class="scene_frame blink_anime small_view scenario-aircom" >
+        <img src="./hdimages/red_scn_aircon.png" class="scene_frame blink_anime small_view scenario-cur" >
+        <img border="0" src="./hdimages/bk_nechu.png"  style="position: absolute;top:0;left:0" >
+
+	<div class="scene_top_button">
+		<img border="0" src="./hdimages/btn_scn_return.png" class="btn_tap_anim exp_index" style="position: absolute;left: 2289px;top:1409px"  alt="機器の操作に戻る">
+	</div>
+</div>
+    
+</body>
+</html>

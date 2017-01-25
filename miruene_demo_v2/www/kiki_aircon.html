@@ -1,0 +1,251 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+  <!-- 機器の操作 -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="Content-Security-Policy" content="default-src * data:; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
+    <script src="./js/jquery-1.11.3.min.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+
+    <script src="js/irkit.js"></script>
+    <script src="js/scenario.js"></script>
+
+
+    <link rel="stylesheet" href="css/anime_btn.css">
+    <script src="js/btn.js"></script>
+
+    <title>機器の操作</title>
+    
+
+    <style>
+    /*  エアコン */
+    #aircon_panel{
+        position: relative;
+    }
+
+    #aircon_base{
+        top: 32px;
+        Left: 60px;
+    }
+    #aircon_up {
+        position: absolute;
+        top: 60px;
+        Left: 710px;
+    }
+    
+    #aircon_down {
+        position: absolute;
+        top: 192px;
+        Left: 710px;
+    }
+    
+ aircon_temp_txt {
+    position: absolute;
+    font-size: 16.0em;
+    font-weight: bold;
+    top: 1050px;
+    Left: 730px;
+    }
+
+    #purifier_hum_txt {
+        position: absolute;
+        font-size: 7.4em;
+        font-weight: bold;
+        top: 460px;
+        Left: 320px;
+    }
+
+
+    </style>
+
+  <script>
+        var opration_flag =  true; //操作されたかチェック
+        const DEFAULT_TEMPERATURE=25;// エアコン初期温度
+        const DEFAULT_HUMD =50 ;
+        function  use_vibrate() {
+            navigator.vibrate(100);
+        }
+        function  opration_check() {
+             if(!opration_flag){
+                console.log("index");
+               location.href="kiki_menu.html";
+			 } else{
+				console.log("index");
+			 }
+			 opration_flag=false;
+		}
+
+
+        $(document).ready(function () {
+		console.log("Onsen UI is ready!");
+		setBtnAnim();
+		setBtnSound();
+  		//
+		const OP_TIME = 200; //操作画面への遷移
+		const NEXTPAGE_TIME = 3400; //操作画面への遷移
+		const NO_OPRATIN_TIME = 30000; //何もしなければ操作画面への遷移
+
+		var temperature_value = DEFAULT_TEMPERATURE; //既定値
+		var aircon_temp_txt1 =  $("#aircon_temp_txt"); //エアコン温度表示
+    	var purifier_hum_txt1 = $("#purifier_hum_txt"); //湿度表示
+	
+
+		// 一定期間操作がなければ　機器操作index
+    	
+		setInterval(opration_check(),NO_OPRATIN_TIME); //
+
+
+		 // clearInterval(opration_check);
+
+        sendIRkit_init_command();
+        scenario_exec("SCENARIO_ALLT_RESET");
+
+        var rep_hits_flag =  true; //操作されたかチェック
+    	function  hits_flag() {
+			rep_hits_flag= true;
+            use_vibrate();
+            setTimeout( function (){
+				console.log("kye enabled");
+				rep_hits_flag =false ;
+		    } , 1500); 			
+		}
+
+		/*
+			イベントハンドラー
+		*/
+		//  すべて
+		$(document).on('click',function(e) {
+		 opration_flag=true;
+		});
+
+
+		/*
+		// begin 機器操作インデックス　画面遷移
+		*/
+
+		/*------------------------------
+		　家電操作
+		--------------------------------*/
+		/*
+		 エアコン
+		*/
+
+
+    	//エアコンON
+		$(document).on('click','#aircon_power',function(e) {
+			if(rep_hits_flag){
+				console.log("連打禁止");
+				return ;
+			}
+			hits_flag(this);
+			//sendIRkit_command("AIRCON_POWER");
+            
+        	sendIRkit_command("AIRCON_ON");
+            
+			console.log("aircon_power");
+		});
+
+        //エアコンON
+		$(document).on('click','#aricon_on',function(e) {
+			if(rep_hits_flag){
+				console.log("連打禁止");
+				return ;
+			}
+			hits_flag(this);
+			sendIRkit_command("AIRCON_ON");
+            
+			console.log("aricon_on");
+		});
+
+		//エアコンOFF
+		$(document).on('click','#aricon_off',function(e) {
+			if(rep_hits_flag){
+				console.log("連打禁止");
+				return ;
+			}
+			hits_flag(this);
+
+			sendIRkit_command("AIRCON_ON");
+			console.log("aricon_off");
+		});
+
+		//エアコン温度UP
+		$(document).on('click','#aircon_up',function(e) {
+			if(rep_hits_flag){
+				console.log("連打禁止");
+				return ;
+			}
+			hits_flag(this);
+			if(temperature_value<30){
+//				sendIRkit_command("AIRCON_UP");
+				temperature_value++;
+				aircon_temp_txt.innerHTML = temperature_value ; 
+
+			}
+			console.log("aircon_up");
+
+		});
+
+		//エアコン_down
+		$(document).on('click','#aircon_down',function(e) {
+			if(rep_hits_flag){
+				console.log("連打禁止");
+				return ;
+			}
+			hits_flag(this);
+			if(temperature_value>18){
+//				sendIRkit_command("AIRCON_DOWN");
+				temperature_value--;
+				aircon_temp_txt.innerHTML = temperature_value ; 
+			}
+			console.log("aircon_down");
+		});
+
+
+
+
+
+		//機器操作インデクス
+		$(document).on('click','.op_index',function(e) {
+            if(rep_hits_flag){
+				console.log("連打禁止");
+				return ;
+			}
+    		hits_flag(this);
+			location.href="kiki_menu.html";
+			console.log("op_index");
+            sendIRkit_init_command();
+            myNavigator.resetToPage("op_index.html");
+		});
+
+    	$(document).on('click',function(e) {
+		});
+
+
+    });
+
+  </script>
+</head>
+
+<body>
+
+
+ <!-- エアコン操作 -->
+
+    <div style="position: relative;margin: 0px; padding: 0px;width:100%;height: auto;">
+
+    <img border="0" src="./hdimages/bk_aircon.png"  style="position: absolute;top:0;left:0">
+    <img border="0" src="./hdimages/btn_aircon_power.png" id="aircon_power"  alt="電源" class="btn_tap_anim btn_tap_sound" style="position:absolute;left:639px;top:455px" >
+    <img border="0" src="./hdimages/btn_aircon_up.png" id="aircon_up"  alt="温度上"  class="btn_tap_anim btn_tap_sound" style="position:absolute;left:1445px;top:962px" >
+    <img border="0" src="./hdimages/btn_aircon_down.png"  id="aircon_down" alt="温度下"  class="btn_tap_anim btn_tap_sound" style="position:absolute;left:1445px;top:1122px" >
+
+    <div id="aircon_temp_txt" >25</div>
+
+    <img border="0" src="./hdimages/btn_kiki_return.png" alt="戻る"  class="op_index" class="btn_tap_anim btn_tap_sound" style="position:absolute;left:145px;top:1424px;">
+
+
+    </div>
+    
+</body>
+</html>

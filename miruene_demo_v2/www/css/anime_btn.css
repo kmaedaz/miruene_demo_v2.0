@@ -1,0 +1,19 @@
+	/* jsで制御するためのクラス。アニメーション前の状態を設定。 */
+	.btn_tap_anim {
+		display: inline-block;
+		-webkit-transition: 120ms;
+		-webkit-transform: scale(1);
+    	transition: 120ms;
+		transform: scale(1);
+
+    }
+	
+	/* タップ時のCSSアニメーション設定 */
+	.btn_tap_anim_on {
+		-webkit-transition: 200ms;
+		-webkit-transform: scale(0.95);
+    	transition: 200ms;
+		transform: scale(0.95);
+
+    }
+	

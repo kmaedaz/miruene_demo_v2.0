@@ -1,0 +1,1069 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <!-- 機器の操作 -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="Content-Security-Policy" content="default-src * data:; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
+    <script src="components/loader.js"></script>
+    <script src="lib/onsenui/js/onsenui.min.js"></script>
+
+    <link rel="stylesheet" href="components/loader.css">
+    <link rel="stylesheet" href="lib/onsenui/css/onsenui.css">
+    <link rel="stylesheet" href="lib/onsenui/css/onsen-css-components.css">
+
+    <script src="./js/jquery-1.11.3.min.js"></script>
+    <script src="./js/underscore-min.js"></script>
+    <script src="./js/backbone-min.js"></script>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <script src="js/irkit.js"></script>
+    <script src="js/scenario.js"></script>
+
+
+    <link rel="stylesheet" href="css/anime_btn.css">
+    <script src="js/btn.js"></script>
+
+    <title>機器の操作</title>
+    
+
+    <style>
+    /*  エアコン */
+    #aircon_panel{
+        position: relative;
+    }
+
+    #aircon_base{
+        top: 32px;
+        Left: 60px;
+    }
+    #aircon_up {
+        position: absolute;
+        top: 60px;
+        Left: 710px;
+    }
+    
+    #aircon_down {
+        position: absolute;
+        top: 192px;
+        Left: 710px;
+    }
+    
+    #aircon_temp_txt {
+        position: absolute;
+        font-size: 7.4em;
+        font-weight: bold;
+        top: 460px;
+        Left: 320px;
+    }
+
+    #purifier_hum_txt {
+        position: absolute;
+        font-size: 7.4em;
+        font-weight: bold;
+        top: 460px;
+        Left: 320px;
+    }
+
+
+    /*  テレビ */
+    #tv_power_base{
+        position: relative;
+    }
+
+    #tv_power {
+        position: absolute;
+        top: 88px;
+        Left: -16px;
+        width:98%;
+    }
+    
+    #tv_ch_base {
+        position: relative;
+    }
+    
+    
+    #tv_ch_up {
+        position: absolute;
+        top: 86px;
+        Left: -24px;
+    }
+    
+    #tv_ch_down {
+        position: absolute;
+        top: 246px;
+        Left: -24px;
+        }
+    </style>
+
+  <script>
+        var opration_flag =  false; //操作されたかチェック
+        const DEFAULT_TEMPERATURE=25;// エアコン初期温度
+        const DEFAULT_HUMD =50 ;
+        function  use_vibrate() {
+            navigator.vibrate(100);
+        }
+        function  opration_check(myNavigator) {
+             if(!opration_flag){
+                console.log("index");
+    			// 家電機器初期設定
+                sendIRkit_init_command();
+                scenario_exec("SCENARIO_ALLT_RESET");
+				var val = DEFAULT_TEMPERATURE; //エアコン温度表示
+
+                myNavigator.resetToPage("op_index.html");
+			 } else{
+				console.log("index");
+			 }
+			 opration_flag=false;
+		}
+
+
+    ons.ready(function() {
+		console.log("Onsen UI is ready!");
+        setBtnAnim(); 
+  		//
+		const OP_TIME = 200; //操作画面への遷移
+		const NEXTPAGE_TIME = 3400; //操作画面への遷移
+		const NO_OPRATIN_TIME = 30000; //何もしなければ操作画面への遷移
+
+		var temperature_value = DEFAULT_TEMPERATURE; //既定値
+		var aircon_temp_txt1 =  $("#aircon_temp_txt"); //エアコン温度表示
+    	var purifier_hum_txt1 = $("#purifier_hum_txt"); //湿度表示
+		var humd_value = DEFAULT_HUMD; //既定値
+			purifier_hum_txt1.innerHTML = humd_value ; 
+    		aircon_temp_txt1.innerHTML = temperature_value ; 
+            
+		var light_bright = 3;  //明るさ
+
+		var humidity_arry ={ "50":"13-parts5ax475y720.png","60":"13-parts5bx475y720.png","70":"13-parts5cx475y720.png","80":"13-parts5dx475y720.png"};
+
+		// 一定期間操作がなければ　機器操作index
+    	
+		setInterval(opration_check(myNavigator),NO_OPRATIN_TIME); //
+
+
+		 // clearInterval(opration_check);
+
+        sendIRkit_init_command();
+        scenario_exec("SCENARIO_ALLT_RESET");
+
+        var rep_hits_flag =  false; //操作されたかチェック
+
+    	function  hits_flag(v) {
+			rep_hits_flag= true;
+            use_vibrate();
+            setTimeout( function (){
+				console.log("kye enabled");
+				rep_hits_flag =false ;
+		    } , 1500); 			
+		}
+
+		/*
+			イベントハンドラー
+		*/
+		//  すべて
+		$(document).on('click',function(e) {
+		 opration_flag=true;
+		});
+
+
+		/*
+		// begin 機器操作インデックス　画面遷移
+		*/
+		$(document).on('click','#light_op',function(e) {
+				if(rep_hits_flag){
+					console.log("連打禁止");
+					return ;
+				}
+				hits_flag(e);
+                setTimeout(	function (){
+                    myNavigator.resetToPage("light_explanation.html",{ animation: "lift" });
+					setTimeout(	function (){
+					myNavigator.resetToPage("light_control.html");
+					} , NEXTPAGE_TIME);
+			} , OP_TIME);
+
+			console.log("light_op");
+		});
+
+		$(document).on('click','#aircon_op',function(e) {
+			console.log("aircon_op");
+    		if(rep_hits_flag){
+				console.log("連打禁止");
+				return ;
+			}
+			hits_flag(e);
+            setTimeout(	function (){
+				myNavigator.resetToPage("aircon_explanation.html",{ animation: "lift" });
+					setTimeout(	function (){
+					myNavigator.resetToPage("aircon_control.html");
+					} , NEXTPAGE_TIME);
+			} , OP_TIME);
+		});
+
+		$(document).on('click','#tv_op',function(e) {
+    		if(rep_hits_flag){
+    				console.log("連打禁止");
+    				return ;
+    			}
+			hits_flag(e);
+            setTimeout(	function (){
+				myNavigator.resetToPage("tv_explanation.html",{ animation: "lift" });
+					setTimeout(	function (){
+					myNavigator.resetToPage("tv_control.html");
+					} , NEXTPAGE_TIME);
+			} , OP_TIME);
+
+			console.log("aircon_op");
+		});
+
+		$(document).on('click','#audio_op',function(e) {
+    		if(rep_hits_flag){
+				console.log("連打禁止");
+				return ;
+			}
+			hits_flag(this);
+            console.log("audio_op");
+			setTimeout(	function (){
+				myNavigator.resetToPage("audio_explanation.html",{ animation: "lift" });
+					setTimeout(	function (){
+					myNavigator.resetToPage("audio_control.html");
+					} , NEXTPAGE_TIME);
+			} , OP_TIME);
+		});
+
+
+
+		//加湿空気清浄機
+		$(document).on('click','#purifier_op',function(e) {
+    		if(rep_hits_flag){
+				console.log("連打禁止");
+				return ;
+			}
+			hits_flag(this);
+           console.log("purifier_op");
+			setTimeout(	function (){
+				myNavigator.resetToPage("purifier_explanation.html",{ animation: "lift" });
+					setTimeout(	function (){
+					myNavigator.resetToPage("purifier_control.html");
+					} , NEXTPAGE_TIME);
+			} , OP_TIME);
+
+		});
+
+
+		$(document).on('click','#curtain_op',function(e) {
+		  // カーテン
+			console.log("curtain_op");
+    		if(rep_hits_flag){
+				console.log("連打禁止");
+				return ;
+			}
+			hits_flag(this);
+            setTimeout(	function (){
+				myNavigator.resetToPage("curtain_explanation.html",{ animation: "lift" });
+					setTimeout(	function (){
+					myNavigator.resetToPage("curtain_control.html");
+					} , NEXTPAGE_TIME);
+			} , OP_TIME);
+
+		});
+
+		$(document).on('click','#petfeeter_op',function(e) {
+			console.log("aircon_op");
+    		if(rep_hits_flag){
+				console.log("連打禁止");
+				return ;
+			}
+			hits_flag(this);
+                setTimeout(	function (){
+				myNavigator.resetToPage("petffood_explanation.html",{ animation: "lift" });
+					setTimeout(	function (){
+					myNavigator.resetToPage("petffood_control.html");
+					} , NEXTPAGE_TIME);
+			} , OP_TIME);
+
+		});
+
+		/*
+		// end 機器操作インデックス
+		*/
+
+		/*------------------------------
+		　家電操作
+		--------------------------------*/
+		/*
+		 照明操作
+		*/
+		//イベントハンドら
+		$(document).on('click','#light_all_off',function(e) {
+			if(rep_hits_flag){
+				console.log("連打禁止");
+				return ;
+			}
+    		console.log(e);
+
+            hits_flag(e);
+            buttonAnim(e);
+
+            sendIRkit_command("LIGHT_OFF");
+			console.log("light_all_off");
+		});
+
+		//イベントハンドら
+		$(document).on('click','#light_all_on',function(e) {
+		if(rep_hits_flag){
+			console.log("連打禁止");
+			return ;
+		}
+		hits_flag(e);
+			sendIRkit_command("LIGHT_ON");
+			console.log("ight_all_on");
+		});
+
+		//イベント明るく
+		$(document).on('click','#light_bright',function(e) {
+			if(rep_hits_flag){
+				console.log("連打禁止");
+				return ;
+			}
+			hits_flag(this);
+			if(light_bright<5){
+				light_bright++;
+				var t= "LIGHT_BRIGHT" + light_bright ;
+				sendIRkit_command(t);
+			}
+	            console.log("light_bright");
+		});
+
+		//イベント 減灯
+		$(document).on('click','#light_reduce',function(e) {
+			if(rep_hits_flag){
+				console.log("連打禁止");
+				return ;
+			}
+			hits_flag(this);
+    		sendIRkit_command("LIGHT_WARMCOLOR"); //test
+            console.log("light_reduce");
+        });
+
+		//イベント常夜灯
+		$(document).on('click','#light_night',function(e) {
+			if(rep_hits_flag){
+				console.log("連打禁止");
+				return ;
+			}
+			hits_flag(this);
+			sendIRkit_command("LAMP_ON");
+			console.log("light_night");
+		});
+
+		//イベント
+		$(document).on('click','#light_dark',function(e) {
+			if(rep_hits_flag){
+				console.log("連打禁止");
+				return ;
+			}
+			hits_flag(this);
+			if(light_bright>0){
+				light_bright--;
+				var t= "LIGHT_BRIGHT" + light_bright ;
+				sendIRkit_command(t);
+			}
+			//sendIRkit_command("LAMP_DOWN");
+			console.log("light_dark");
+		});
+
+		/*
+		 エアコン
+		*/
+
+
+    	//エアコンON
+		$(document).on('click','#aircon_power',function(e) {
+			if(rep_hits_flag){
+				console.log("連打禁止");
+				return ;
+			}
+			hits_flag(this);
+			//sendIRkit_command("AIRCON_POWER");
+            
+        	sendIRkit_command("AIRCON_ON");
+            
+			console.log("aircon_power");
+		});
+
+        //エアコンON
+		$(document).on('click','#aricon_on',function(e) {
+			if(rep_hits_flag){
+				console.log("連打禁止");
+				return ;
+			}
+			hits_flag(this);
+			sendIRkit_command("AIRCON_ON");
+            
+			console.log("aricon_on");
+		});
+
+		//エアコンOFF
+		$(document).on('click','#aricon_off',function(e) {
+			if(rep_hits_flag){
+				console.log("連打禁止");
+				return ;
+			}
+			hits_flag(this);
+
+			sendIRkit_command("AIRCON_ON");
+			console.log("aricon_off");
+		});
+
+		//エアコン温度UP
+		$(document).on('click','#aircon_up',function(e) {
+			if(rep_hits_flag){
+				console.log("連打禁止");
+				return ;
+			}
+			hits_flag(this);
+			if(temperature_value<30){
+//				sendIRkit_command("AIRCON_UP");
+				temperature_value++;
+				aircon_temp_txt.innerHTML = temperature_value ; 
+
+			}
+			console.log("aircon_up");
+
+		});
+
+		//エアコン_down
+		$(document).on('click','#aircon_down',function(e) {
+			if(rep_hits_flag){
+				console.log("連打禁止");
+				return ;
+			}
+			hits_flag(this);
+			if(temperature_value>18){
+//				sendIRkit_command("AIRCON_DOWN");
+				temperature_value--;
+				aircon_temp_txt.innerHTML = temperature_value ; 
+			}
+			console.log("aircon_down");
+		});
+
+		//TV
+		$(document).on('click','#tv_power',function(e) {
+			if(rep_hits_flag){
+				console.log("連打禁止");
+				return ;
+			}
+    		hits_flag(this);
+			sendIRkit_command("TV_ON");
+            //sendIRkit_dbl_command("TV_ON",2000);
+			console.log("tv_power");
+		});
+
+		$(document).on('click','#tv_ch_up',function(e) {
+			if(rep_hits_flag){
+				console.log("連打禁止");
+				return ;
+			}
+    		hits_flag(this);
+			sendIRkit_command("TV_CH_UP");
+			console.log("tv_ch_up");
+		});
+
+		$(document).on('click','#tv_ch_down',function(e) {
+			if(rep_hits_flag){
+				console.log("連打禁止");
+				return ;
+			}
+    		hits_flag(this);
+			sendIRkit_command("TV_CH_DOWN");
+			console.log("tv_ch_down");
+		});
+
+		$(document).on('click','#tv_chidegi',function(e) {
+			if(rep_hits_flag){
+				console.log("連打禁止");
+				return ;
+			}
+    		hits_flag(this);
+			sendIRkit_command("TV_CHIDEGI");
+			console.log("tv_chidegi");
+		});
+
+		$(document).on('click','#tv_bs',function(e) {
+			if(rep_hits_flag){
+				console.log("連打禁止");
+				return ;
+			}
+    		hits_flag(this);
+			sendIRkit_command("TV_BS");
+			console.log("tv_bs");
+		});
+
+		//オーディオ
+		$(document).on('click','#audio_power',function(e) {
+			if(rep_hits_flag){
+				console.log("連打禁止");
+				return ;
+			}
+    		hits_flag(this);
+
+			sendIRkit_command("AUDIO_ON");
+			console.log("audio_power");
+		});
+
+
+		$(document).on('click','#audio_play',function(e) {
+			if(rep_hits_flag){
+				console.log("連打禁止");
+				return ;
+			}
+    		hits_flag(this);
+			sendIRkit_command("AUDIO_PLAY");
+			console.log("audio_play");
+		});
+
+		$(document).on('click','#audio_stop',function(e) {
+			if(rep_hits_flag){
+				console.log("連打禁止");
+				return ;
+			}
+    		hits_flag(this);
+			sendIRkit_command("AUDIO_STOP");
+			console.log("audio_stop");
+		});
+
+		$(document).on('click','#audio_ffskip',function(e) {
+			if(rep_hits_flag){
+				console.log("連打禁止");
+				return ;
+			}
+    		hits_flag(this);
+			sendIRkit_command("AUDIO_FFSKIP");
+			console.log("audio_ffskip");
+		});
+
+
+		$(document).on('click','#audio_revskip',function(e) {
+			if(rep_hits_flag){
+				console.log("連打禁止");
+				return ;
+			}
+    		hits_flag(this);
+			sendIRkit_command("AUDIO_REVSKIP");
+			console.log("audio_revskip");
+		});
+
+		// 加湿空気清浄機
+		$(document).on('click','#purifier_on',function(e) {
+			if(rep_hits_flag){
+				console.log("連打禁止");
+				return ;
+			}
+    		hits_flag(this);
+			sendIRkit_command("PURIFER_ON");
+			console.log("purifier_on");
+		});
+
+		$(document).on('click','#purifier_off',function(e) {
+			if(rep_hits_flag){
+				console.log("連打禁止");
+				return ;
+			}
+    		hits_flag(this);
+			sendIRkit_command("PURIFER_OFF");
+			console.log("purifier_off");
+		});
+
+
+		$(document).on('click','#purifier_up',function(e) {
+    			console.log("purifier_up" + humd_value);
+        		console.log("purifier_up" + purifier_hum_txt1);
+            if(rep_hits_flag){
+				console.log("連打禁止");
+				return ;
+			}
+    		hits_flag(this);
+			//
+			if(humd_value <80){
+				humd_value +=  10 ;
+    			purifier_hum_txt.innerHTML = humd_value ; 
+			}
+			console.log("purifier_up");
+		});
+
+
+		$(document).on('click','#purifier_down',function(e) {
+			if(rep_hits_flag){
+				console.log("連打禁止");
+				return ;
+			}
+    		hits_flag(this);
+			//
+			if(humd_value >50 ){
+    			humd_value -= 10 ;
+				purifier_hum_txt.innerHTML = humd_value ; 
+
+			}
+			console.log("purifier_down"+purifier_hum_txt1.innerHTML);
+		});
+
+
+		// カーテン
+		$(document).on('click','#curtain_open',function(e) {
+			if(rep_hits_flag){
+				console.log("連打禁止");
+				return ;
+			}
+    		hits_flag(this);
+			sendIRkit_dbl_command("CURTAIN_OPEN",2000);
+			console.log("curtain_open");
+		});
+
+		$(document).on('click','#curtain_close',function(e) {
+			if(rep_hits_flag){
+				console.log("連打禁止");
+				return ;
+			}
+    		hits_flag(this);
+			sendIRkit_dbl_command("CURTAIN_CLOSE",2000);
+			console.log("curtain_close");
+		});
+
+		// pet food 
+		$(document).on('click','#pet_feeder',function(e) {
+			if(rep_hits_flag){
+				console.log("連打禁止");
+				return ;
+			}
+    		hits_flag(this);
+			sendIRkit_command("PET_FEEDER_PLAY");
+			console.log("pet_feeder");
+		});
+
+
+
+		//機器操作インデクス
+		$(document).on('click','.op_index',function(e) {
+
+            if(rep_hits_flag){
+				console.log("連打禁止");
+				return ;
+			}
+    		hits_flag(this);
+			console.log("op_index");
+            sendIRkit_init_command();
+            myNavigator.resetToPage("op_index.html");
+		});
+
+    	$(document).on('click',function(e) {
+		});
+
+
+    });
+
+  </script>
+</head>
+
+<body>
+  <!-- First navigation component: Navigator. This will remain always on top of the app. -->
+  <ons-navigator id="myNavigator" var="myNavigator" page="op_index.html" >
+  </ons-navigator>
+
+ <!-- 
+	 機器の操作インデクス 
+ -->
+  <ons-template id="op_index.html">
+       <ons-page >
+        <div style="position: relative;margin: 0px; padding: 0px;width:100% ;height: 100%;">
+	        <img border="0" src="./images/operation_top.png"  style="position: absolute;top:0;left:0;width:100%;">
+
+            <a href="javascript:void(0)" id="light_op" >
+            <img border="0" src="./images/02-kiki-parts1_x370y349.png"  class="btn_tap_anim"  style="position:fixed;left:244px;top:230px;width:225px;" alt="照明">
+            </a>
+
+            <a href="javascript:void(0)" id="aircon_op" >
+            <img border="0" src="./images/02-kiki-parts2_x784y349.png" class="btn_tap_anim" style="position:absolute;left:517px;top:230px;width:225px" alt="エアコン">
+            </a>
+
+            <a href="javascript:void(0)" id="tv_op" >
+            <img border="0" src="./images/02-kiki-parts3_x1197y349.png" class="btn_tap_anim"  style="position: absolute;left:790px;top:230px;width:225px" alt="テレビ">
+            </a>
+
+            <a href="javascript:void(0)" id="audio_op" >
+            <img border="0" src="./images/02-kiki-parts4_x163y661.png" class="btn_tap_anim"   style="position: absolute;left:107px;top:436px;width:225px"alt="オーディオ">
+            </a>
+
+            <a href="javascript:void(0)" id="purifier_op" >
+			<button type="button" id="purifier_op">
+            <img border="0" src="./images/02-kiki-parts5_x577y661.png"  class="btn_tap_anim"  style="position: absolute;left:380px;top:436px;width:225px" alt="空気清浄機">        
+            </a>
+
+            <a href="javascript:void(0)" id="curtain_op" >
+			<button type="button" id="curtain_op">
+            <img border="0" src="./images/02-kiki-parts6_x990y661.png"  class="btn_tap_anim"  style="position: absolute;left:653px;top:436px;width:225px" alt="カーテン">
+            </a>
+
+            <a href="javascript:void(0)" id="petfeeter_op" >
+            <img border="0" src="./images/02-kiki-parts7_x1404y661.png"  class="btn_tap_anim"  style="position: absolute;left:926px;top:436px;width:225px" alt="自動餌">
+            </a>
+
+
+            <a href="index.html" >
+            <img border="0" src="./images/02-kiki-parts8_x43y999.png"  class="btn_tap_anim" style="position: absolute;left:43px;top:659px;width:144px;" alt="TOPに戻る">
+            </a>        
+	   </div>
+ </ons-page>
+</ons-template>
+
+ <!-- 照明説明 -->
+  <ons-template id="light_explanation.html">
+   <ons-page>
+    <div style="position: relative;margin: 0px; padding: 0px;width:100%;height: auto;">
+    <img border="0" src="./images/04-back.png"  style="position: absolute;top:0;left:0;width:1280px">
+    <img border="0" src="./images/opreation-back.png"  style="position: absolute;top:0;left:0;width:1280px">
+    <img border="0" src="./images/operation-shomei.png"  class="blink_anime" style="position: absolute;top:0;left:0;width:1280px">
+    </div>
+   </ons-page>
+  </ons-template>
+
+
+    <!--照明操作-->
+    <ons-template id="light_control.html">
+		<ons-page>
+	        <div style="position: relative;margin: 0px; padding: 0px;width:100%;height: auto;">
+	        <img border="0" src="./images/05-back.png"  style="position: absolute;top:0;left:0;width:1280px">
+	        
+	        
+	        <a href="javascript:void(0)" id="light_all_on" >
+	        <img border="0" src="./images/05-parts1x340y247.png"  class="btn_tap_anim" style="position:fixed;left:244px;top:163px;width:235px;"   alt="明全灯ON">
+	        </a>
+	    
+	        <a href="javascript:void(0)" id="light_all_off" >
+	        <img border="0" src="./images/05-parts2x781y247.png"  class="btn_tap_anim" style="position:fixed;left:515px;top:163px;width:235px;" alt="全灯OFF">
+	        </a>
+	        
+	        <a href="javascript:void(0)" id="light_night" >
+	        <img border="0" src="./images/05-parts3x1222y247.png"  class="btn_tap_anim" style="position:fixed;left:809px;top:163px;width:235px;" alt="常夜灯">
+	        </a>
+	        
+	        <a href="javascript:void(0)" id="light_bright" >
+	        <img border="0" src="./images/05-parts4x560y644.png"  class="btn_tap_anim" style="position:fixed;left:370px;top:425px;width:235px;" alt="明るく">
+	        </a>
+	        
+	        <a href="javascript:void(0)" id="light_dark" >
+	        <img border="0" src="./images/05-parts5x1001y644.png"  class="btn_tap_anim" style="position:fixed;left:661px;top:425px;width:235px;" alt="暗く">
+	        </a>
+	        
+	        <a href="javascript:void(0)" class="op_index" >
+	        <img border="0" src="./images/05-parts6x42y999.png" class="btn_tap_anim" style="position:fixed;left:27px;top:659px;width:144px;"  alt="機器の操作に戻る">
+	        </a>
+		</div>
+	    </ons-page>
+    </ons-template>
+
+
+ <!-- エアコン説明 -->
+  <ons-template id="aircon_explanation.html">
+	<ons-page>
+	<div style="position: relative;margin: 0px; padding: 0px;width:100%;height: auto;">
+		<img border="0" src="./images/06-back.png"  style="position: absolute;top:0;left:0;width:1280px">
+		<img border="0" src="./images/opreation-back.png"  style="position: absolute;top:0;left:0;width:1280px">
+		<img border="0" src="./images/operation-aircom.png"  class="blink_anime"  style="position: absolute;top:0;left:0;width:1280px">
+	</div>
+	</ons-page>
+  </ons-template>
+
+    <!--- エアコン -->
+	<ons-template id="aircon_control.html">
+	   <ons-page>
+        <div style="position: relative;margin: 0px; padding: 0px;width:100%;height: auto;">
+        <img border="0" src="./images/07-aircom-back.png"  style="position: absolute;top:0;left:0;width:1280px">
+
+        <a href="javascript:void(0)" id="aircon_power" >
+        <img border="0" src="./images/07-aircom-parts1x413y257.png" alt="電源" class="btn_tap_anim" style="position:fixed;left:272px;top:179px;width:696px;" >
+		</a>
+
+        <a href="javascript:void(0)" class="op_index" >
+        <img border="0" src="./images/07-aircom-parts2x44y999.png"   alt="戻る"class="btn_tap_anim" style="position:fixed;left:29px;top:659px;width:144px;" >
+		</a>
+
+        <a href="javascript:void(0)" id="aircon_up" >
+        <img border="0" src="./images/07-aircom-parts3x1017y637.png" alt="温度上"  class="btn_tap_anim" style="position:fixed;left:671px;top:420px;width:298px;" >
+		</a>
+
+        <a href="javascript:void(0)" id="aircon_down" >
+        <img border="0" src="./images/07-parts4x1017y757.png"  alt="温度下"  class="btn_tap_anim" style="position:fixed;left:671px;top:499px;width:298px;" >
+		</a>
+
+		<div id="aircon_temp_txt" >
+			25
+		</div>
+<!--
+
+        <img border="0" src="./images/07-aircom-parts5ax475y720.png"  alt="２５" style="position:fixed;left:313px;top:475px;width:156px;" >
+07-back.png
+07-parts1x413y257.png
+07-parts2x44y999.png
+07-parts3.png
+07-parts3x1017y637.png
+07-parts4x1017y757.png
+07-parts5ax475y720.png
+07-parts5bx475y720.png
+07-parts5cx475y720.png
+07-parts5dx475y720.png
+<img border="0" src="./images/07-parts5bx475y720.png"  alt="２６" style="position:fixed;left:244px;top:163px;width:235px;" >
+<img border="0" src="./images/07-parts5cx475y720.png"  alt="２7" style="position:fixed;left:244px;top:163px;width:235px;" >
+<img border="0" src="./images/07-parts5cx475y720.png"  alt="28" style="position:fixed;left:244px;top:163px;width:235px;" >
+-->
+
+ 	</div>
+    </ons-page>
+	</ons-template>
+
+ <!-- 
+テレビ
+ 説明 
+ -->
+  <ons-template id="tv_explanation.html">
+   <ons-page>
+    <div style="position: relative;margin: 0px; padding: 0px;width:100%;height: auto;">
+    <img border="0" src="./images/08-back.png"  style="position: absolute;top:0;left:0;width:1280px">
+    <img border="0" src="./images/opreation-back.png"  style="position: absolute;top:0;left:0;width:1280px">
+    <img border="0" src="./images/operation-tv.png"  class="blink_anime" style="position: absolute;top:0;left:0;width:1280px">
+    </div>
+   </ons-page>
+  </ons-template>
+
+
+
+	<!- 
+	テレビ 操作
+	 -->
+	<ons-template id="tv_control.html">
+	   <ons-page>
+        <div style="position: relative;margin: 0px; padding: 0px;width:100%;height: auto;">
+		    <img border="0" src="./images/09-back.png"  style="position: absolute;top:0;left:0;width:1280px">
+
+
+		    <a href="javascript:void(0)" id="tv_power" >
+		    <img border="0" src="./images/09-parts1x225y464.png" alt="電源" class="btn_tap_anim" style="position:fixed;left:148px;top:306px;width:242px;" >
+			</a>
+
+		    <a href="javascript:void(0)" id="tv_ch_up" >
+		    <img border="0" src="./images/09-parts2x774y464.png" alt="チャンネル上" class="btn_tap_anim" style="position:fixed;left:510px;top:306px;width:242px;" >
+			</a>
+
+		    <a href="javascript:void(0)" id="tv_ch_down" >
+		    <img border="0" src="./images/09-parts3x774y673.png" alt="チャンネル下" class="btn_tap_anim" style="position:fixed;left:510px;top:441px;width:242px;" >
+			</a>
+
+		   <a href="javascript:void(0)" id="tv_chidegi" >
+		    <img border="0" src="./images/09-parts4x1323y280.png" alt="地デジ" class="btn_tap_anim" style="position:fixed;left:873px;top:184px;width:242px;" >
+			</a>
+
+		     <a href="javascript:void(0)" id="tv_bs" >
+		    <img border="0" src="./images/09-parts5x1323y622.png" alt="BS" class="btn_tap_anim" style="position:fixed;left:873px;top:410px;width:242px;" >
+			</a>
+
+        <a href="javascript:void(0)" class="op_index" >
+        <img border="0" src="./images/07-aircom-parts2x44y999.png"   alt="戻る" class="btn_tap_anim" style="position:fixed;left:29px;top:659px;width:144px;" >
+    	</a>
+
+		</div>
+
+
+<!--
+09-back.png  haikei
+
+09-parts1x225y464.png 電源 370
+09-parts2x774y464.png  チャンネル！ w370
+09-parts3x774y673.png　　チャンネル！W370
+09-parts4x1323y280.png　地デジ W370 
+09-parts5x1323y622.png　BS W370
+09-parts6x42y999.png　　戻る
+-->
+		</ons-page>
+	</ons-template>
+
+ <!-- 
+ オーディオ
+ 説明 -->
+  <ons-template id="audio_explanation.html">
+   <ons-page>
+    <div style="position: relative;margin: 0px; padding: 0px;width:100%;height: auto;">
+		<img border="0" src="./images/10-back.png"  style="position: absolute;top:0;left:0;;width:1280px">
+		<img border="0" src="./images/opreation-back.png"  style="position: absolute;top:0;left:0;width:1280px">
+        <img border="0" src="./images/operation-cd.png" class="blink_anime"  style="position: absolute;top:0;left:0;width:1280px">
+    </div>
+   </ons-page>
+  </ons-template>
+
+	<!- 
+	オーディオ 操作
+	 -->
+    <ons-template id="audio_control.html">
+	   <ons-page>
+
+        <div style="position: relative;margin: 0px; padding: 0px;width:100%;height: auto;">
+		    <img border="0" src="./images/11-back.png"  style="position: absolute;top:0;left:0;width:1280px">
+
+				   <a href="javascript:void(0)" id="audio_power" >
+					<img border="0" src="./images/11-parts1x606y257.png"  class="btn_tap_anim" style="position:fixed;left:399px;top:170px;width:466px;" alt="オーディオPOWER">
+					</a>
+
+				   <a href="javascript:void(0)" id="audio_play" >
+					<img border="0" src="./images/11-parts2x606y424.png"  class="btn_tap_anim" style="position:fixed;left:399px;top:280px;width:466px;" alt="オーディオPLAY">
+					</a>
+
+				   <a href="javascript:void(0)" id="audio_stop" >
+					<img border="0" src="./images/11-parts3x606y590.png"  class="btn_tap_anim" style="position:fixed;left:399px;top:389px;width:466px;" alt="オーディオSTOP">
+					</a>
+
+				   <a href="javascript:void(0)" id="audio_ffskip" >
+					<img border="0" src="./images/11-parts4x606y757.png"  class="btn_tap_anim" style="position:fixed;left:399px;top:500px;width:466px;" alt="オーディオスキップN">
+					</a>
+
+				   <a href="javascript:void(0)" id="audio_revskip" >
+					<img border="0" src="./images/11-parts5x606y923.png"  class="btn_tap_anim" style="position:fixed;left:399px;top:609px;width:466px;" alt="オーディオ逆スキップ">
+					</a>
+
+			        <a href="javascript:void(0)" class="op_index" >
+			        <img border="0" src="./images/05-parts6x42y999.png" class="btn_tap_anim" style="position:fixed;left:27px;top:659px;width:144px;"  alt="機器の操作に戻る">
+			        </a>
+		</div>
+		</div>
+		</ons-page>
+	</ons-template>
+
+<!--
+ 加湿空気清浄機
+ 説明 -->
+  <ons-template id="purifier_explanation.html">
+   <ons-page>
+    <div style="position: relative;margin: 0px; padding: 0px;width:100%;height: auto;">
+	    <img border="0" src="./images/12-back.png"  style="position: absolute;top:0;left:0;;width:1280px">
+		<img border="0" src="./images/opreation-back.png"  style="position: absolute;top:0;left:0;width:1280px">
+        <img border="0" src="./images/operation-kasitu.png" class="blink_anime"  style="position: absolute;top:0;left:0;width:1280px">
+    </div>
+   </ons-page>
+  </ons-template>
+
+    <!-- 
+	加湿空気清浄機 操作
+	 -->
+
+	<ons-template id="purifier_control.html">
+	   <ons-page>
+        <div style="position: relative;margin: 0px; padding: 0px;width:100%;height: auto;">
+		    <img border="0" src="./images/13-back.png"  style="position: absolute;top:0;left:0;width:1280px">
+		    <a href="javascript:void(0)" id="purifier_on" >
+		    <img border="0" src="./images/13-parts1x413y257.png" alt="電源" class="btn_tap_anim" style="position:fixed;left:273px;top:170px;width:697px;" >
+			</a>
+        	<div id="purifier_hum_txt">
+            50
+    		</div>
+
+		    <a href="javascript:void(0)" id="purifier_up" >
+		    <img border="0" src="./images/13-parts3x1017y637.png" alt="上がる" class="btn_tap_anim" style="position:fixed;left:671px;top:420px;width:298px;" >
+			</a>
+
+		    <a href="javascript:void(0)" id="purifier_down" >
+		    <img border="0" src="./images/13-parts4x1017y757.png" alt="下げる" class="btn_tap_anim" style="position:fixed;left:671px;top:499px;width:298px;" >
+			</a>
+
+
+	        <a href="javascript:void(0)" class="op_index" >
+	        <img border="0" src="./images/07-aircom-parts2x44y999.png"   alt="戻る"class="btn_tap_anim" style="position:fixed;left:29px;top:659px;width:144px;" >
+			</a>
+		</div>
+		</ons-page>
+	</ons-template>
+
+
+ <!-- 
+ カーテン
+ 説明 
+ -->
+  <ons-template id="curtain_explanation.html">
+   <ons-page>
+     <div style="position: relative;margin: 0px; padding: 0px;width:100%;height: auto;">
+        <img border="0" src="./images/14-back.png" alt="カーテン" style="position: absolute;top:0;left:0;;width:1280px">
+        <img border="0" src="./images/opreation-back.png"  style="position: absolute;top:0;left:0;width:1280px">
+        <img border="0" src="./images/operation-cur.png"  class="blink_anime" style="position: absolute;top:0;left:0;width:1280px">
+    </div>
+   </ons-page>
+
+  </ons-template>
+    <!- 
+	カーテン 操作
+	 -->
+	<ons-template id="curtain_control.html">
+	   <ons-page>
+        <div style="position: relative;margin: 0px; padding: 0px;width:100%;height: auto;">
+		    <img border="0" src="./images/15-back.png"  style="position: absolute;top:0;left:0;width:1280px">
+		    <a href="javascript:void(0)" id="curtain_open" >
+		    <img border="0" src="./images/15-parts1x279y342.png" alt="カーテン開ける" class="btn_tap_anim" style="position:fixed;left:184px;top:225px;width:897px;" >
+			</a>
+
+		    <a href="javascript:void(0)" id="curtain_close" >
+		    <img border="0" src="./images/15-parts2x279y650.png" alt="カーテン閉める" class="btn_tap_anim" style="position:fixed;left:184px;top:396px;width:897px;" >
+			</a>
+
+	        <a href="javascript:void(0)" class="op_index" >
+	        <img border="0" src="./images/07-aircom-parts2x44y999.png"   alt="戻る"class="btn_tap_anim" style="position:fixed;left:29px;top:659px;width:144px;" >
+			</a>
+		</div>
+		</ons-page>
+	</ons-template>
+
+
+	<!--
+	自動給餌器
+
+	 -->
+
+<!-- 
+ 自動給餌器
+ 説明 -->
+  <ons-template id="petffood_explanation.html">
+   <ons-page>
+    <div style="position: relative;margin: 0px; padding: 0px;width:100%;height: auto;">
+	<img border="0" src="./images/16-back.png" alt="餌" style="position: absolute;top:0;left:0;width:1280px">
+	<img border="0" src="./images/opreation-back.png"   style="position: absolute;top:0;left:0;width:1280px">
+    <img border="0" src="./images/operation-kyuji.png"  class="blink_anime" style="position: absolute;top:0;left:0;width:1280px">
+    </div>
+   </ons-page>
+  </ons-template>
+
+	<!- 
+	自動給餌器 操作
+	 -->
+    <!- 
+	自動給餌器 操作
+	 -->
+	<ons-template id="petffood_control.html">
+	   <ons-page>
+        <div style="position: relative;margin: 0px; padding: 0px;width:100%;height: auto;">
+		    <img border="0" src="./images/17-back.png"  style="position: absolute;top:0;left:0;width:1280px">
+
+		    <a href="javascript:void(0)" id="pet_feeder" >
+		    <img border="0" src="./images/17-parts1x304y409.png" alt="エサを与える" class="btn_tap_anim" style="position:fixed;left:200px;top:270px;width:841px;" >
+			</a>
+
+	        <a href="javascript:void(0)" class="op_index" >
+	        <img border="0" src="./images/07-aircom-parts2x44y999.png"   alt="戻る"class="btn_tap_anim" style="position:fixed;left:29px;top:659px;width:144px;" >
+			</a>
+		</div>
+
+		</ons-page>
+	</ons-template>
+
+
+
+    
+</body>
+</html>
