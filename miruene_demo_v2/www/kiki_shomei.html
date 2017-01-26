@@ -7,10 +7,17 @@
     <meta http-equiv="Content-Security-Policy" content="default-src * data:; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
 
     <script src="./js/jquery-1.11.3.min.js"></script>
+    <script src="./js/ion.sound.min.js"></script>
+    <script src="./js/sound.js"></script>
+
+    <script src="./js/keycheck.js"></script>
+
+    
 
     <link rel="stylesheet" href="css/style.css">
 
-    <script src="js/irkit.js"></script>
+    <script src="js/ir_send.js"></script>
+
     <script src="js/scenario.js"></script>
 
 
@@ -111,7 +118,8 @@
 
 	$(document).ready(function(){
 		console.log("UI is ready!");
-        setBtnAnim(); 
+		setBtnAnim();
+		setBtnSound();
   		//
 		const OP_TIME = 200; //操作画面への遷移
 		const NEXTPAGE_TIME = 3400; //操作画面への遷移
@@ -131,7 +139,6 @@
 
 		 // clearInterval(opration_check);
 
-        sendIRkit_init_command();
         scenario_exec("SCENARIO_ALLT_RESET");
 
         var rep_hits_flag =  true; //操作されたかチェック
@@ -172,70 +179,45 @@
 		*/
 		//イベントハンドら
 		$(document).on('click','#light_all_off',function(e) {
-		    if (hits_flag()) {
-				console.log("連打禁止");
-				return ;
-			}
-            sendIRkit_command("LIGHT_OFF");
+		    sendIRUSB_command("LIGHT_OFF");
 			console.log("light_all_off");
 		});
 
 		//イベントハンドら
 		$(document).on('click','#light_all_on',function(e) {
-		    if (hits_flag()) {
-		        console.log("連打禁止");
-		        return;
-		    }
-		sendIRkit_command("LIGHT_ON");
+	     sendIRUSB_command("LIGHT_ON");
 			console.log("ight_all_on");
 		});
 
 		//イベント明るく
 		$(document).on('click','#light_bright',function(e) {
-		    if (hits_flag()) {
-		        console.log("連打禁止");
-		        return;
-		    }
-		    if (light_bright < 5) {
+             if (light_bright < 5) {
 				light_bright++;
 				var t= "LIGHT_BRIGHT" + light_bright ;
-				sendIRkit_command(t);
+				sendIRUSB_command(t);
 			}
 	            console.log("light_bright");
 		});
 
 		//イベント 減灯
 		$(document).on('click','#light_reduce',function(e) {
-		    if (hits_flag()) {
-		        console.log("連打禁止");
-		        return;
-		    }
-		    sendIRkit_command("LIGHT_WARMCOLOR"); //test
+		    sendIRUSB_command("LIGHT_WARMCOLOR"); //test
             console.log("light_reduce");
         });
 
 		//イベント常夜灯
 		$(document).on('click','#light_night',function(e) {
-		    if (hits_flag()) {
-		        console.log("連打禁止");
-		        return;
-		    }
-		    sendIRkit_command("LAMP_ON");
+		    sendIRUSB_command("JOUYA_ON");
 			console.log("light_night");
 		});
 
 		//イベント
 		$(document).on('click','#light_dark',function(e) {
-		    if (hits_flag()) {
-		        console.log("連打禁止");
-		        return;
-		    }
 		    if (light_bright > 0) {
 				light_bright--;
-				var t= "LIGHT_BRIGHT" + light_bright ;
-				sendIRkit_command(t);
+				var t = "LIGHT_STEP" + light_bright;
+				sendIRUSB_command(t);
 			}
-			//sendIRkit_command("LAMP_DOWN");
 			console.log("light_dark");
 		});
 
@@ -243,14 +225,8 @@
 
 		//機器操作インデクス
 		$(document).on('click','.op_index',function(e) {
-            if(rep_hits_flag){
-				console.log("連打禁止");
-				return ;
-			}
-    		hits_flag(this);
-			console.log("op_index");
-            sendIRkit_init_command();
-            location.href="op_index.html";
+		    console.log("機器操作インデクス");
+            location.href="kiki_menu.html";
 		});
 
     	$(document).on('click',function(e) {
@@ -267,21 +243,18 @@
 
     <div style="position: relative;margin: 0px; padding: 0px;width:100%;height: auto;">
         <img border="0" src="./hdimages/bk_kiki_shomei.png"  style="position: absolute;top:0;left:0">
-      
         
-        <img border="0" src="./hdimages/btn_shomei_zento.png"  id="light_all_on"  class="btn_tap_anim" style="position:absolute;left:543px;top:441px"   alt="明全灯ON">
+        <img border="0" src="./hdimages/btn_shomei_zento.png"  id="light_all_on"  class="btn_tap_anim btn_tap_sound" style="position:absolute;left:543px;top:441px"   alt="明全灯ON">
     
-        <img border="0" src="./hdimages/btn_shomei_off.png"  id="light_all_off"  class="btn_tap_anim" style="position:absolute;left:1131px;top:441px" alt="全灯OFF">
+        <img border="0" src="./hdimages/btn_shomei_off.png"  id="light_all_off"  class="btn_tap_anim btn_tap_sound" style="position:absolute;left:1131px;top:441px" alt="全灯OFF">
         
-        <img border="0" src="./hdimages/btn_shomei_joyato.png"  id="light_night"  class="btn_tap_anim" style="position:absolute;left:1719px;top:441px" alt="常夜灯">
+        <img border="0" src="./hdimages/btn_shomei_joyato.png"  id="light_night"  class="btn_tap_anim btn_tap_sound" style="position:absolute;left:1719px;top:441px" alt="常夜灯">
         
-        <img border="0" src="./hdimages/btn_shomei_up.png"  id="light_bright" class="btn_tap_anim" style="position:absolute;left:836px;top:971px" alt="明るく">
+        <img border="0" src="./hdimages/btn_shomei_up.png"  id="light_bright" class="btn_tap_anim btn_tap_sound" style="position:absolute;left:836px;top:971px" alt="明るく">
         
-        <img border="0" src="./hdimages/btn_shomei_down.png"  id="light_dark" class="btn_tap_anim" style="position:absolute;left:1424px;top:971px" alt="暗く">
+        <img border="0" src="./hdimages/btn_shomei_down.png"  id="light_dark" class="btn_tap_anim btn_tap_sound " style="position:absolute;left:1424px;top:971px" alt="暗く">
         
-        <a href="javascript:void(0)" class="op_index" >
-        <img border="0" src="./hdimages/btn_kiki_return.png" class="btn_tap_anim" style="position:absolute;left:145px;top:1424px"  alt="機器の操作に戻る">
-        </a>
+        <img border="0" src="./hdimages/btn_kiki_return.png" class="op_index btn_tap_anim btn_tap_sound" style="position:absolute;left:145px;top:1424px"  alt="機器の操作に戻る">
 	</div>
     
 </body>
