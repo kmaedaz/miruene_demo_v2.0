@@ -1,0 +1,14 @@
+{
+  "name": "irsv",
+  "version": "1.0.0",
+  "description": "IR-SENDFront-End Service",
+  "main": "irsv.js",
+  "scripts": {
+    "start": "node.exe irsv.js",
+    "install-service": "winser -i -a",
+    "uninstall-service": "winser -r -x"
+  },
+  "dependencies": {
+    "winser": "^1.0.2"
+  }
+}
