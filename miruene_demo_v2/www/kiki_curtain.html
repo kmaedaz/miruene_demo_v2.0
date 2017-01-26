@@ -6,19 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <meta http-equiv="Content-Security-Policy" content="default-src * data:; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
 
-
     <script src="./js/jquery-1.11.3.min.js"></script>
     <!-- 効果音-->
     <script src="./js/ion.sound.min.js"></script>
     <script src="./js/sound.js"></script>
-
-
     <link rel="stylesheet" href="css/style.css">
-
-    <script src="js/irkit.js"></script>
+    <script src="js/ir_send.js"></script>
     <script src="js/scenario.js"></script>
-
-
     <link rel="stylesheet" href="css/anime_btn.css">
     <script src="js/btn.js"></script>
 
@@ -64,7 +58,6 @@ $(document).ready(function(){
 
 		 // clearInterval(opration_check);
 
-        sendIRkit_init_command();
         scenario_exec("SCENARIO_ALLT_RESET");
 
         var rep_hits_flag =  false; //操作されたかチェック
@@ -98,22 +91,12 @@ $(document).ready(function(){
 
 		// カーテン
 		$(document).on('click','#curtain_open',function(e) {
-			if(rep_hits_flag){
-				console.log("連打禁止");
-				return ;
-			}
-    		hits_flag();
-			sendIRkit_dbl_command("CURTAIN_OPEN",2000);
+		    sendIRUSB_command("CURTAIN_OPEN");
 			console.log("curtain_open");
 		});
 
 		$(document).on('click','#curtain_close',function(e) {
-			if(rep_hits_flag){
-				console.log("連打禁止");
-				return ;
-			}
-    		hits_flag();
-			sendIRkit_dbl_command("CURTAIN_CLOSE",2000);
+    		sendIRUSB_command("CURTAIN_CLOSE");
 			console.log("curtain_close");
 		});
 
@@ -121,12 +104,7 @@ $(document).ready(function(){
 
 		//機器操作インデクス
 		$(document).on('click','.op_index',function(e) {
-            if(rep_hits_flag){
-				console.log("連打禁止");
-				return ;
-			}
-    		hits_flag();
-			console.log("op_index");
+		    console.log("機器操作インデクス");
             location.href="kiki_menu.html";
 		});
 

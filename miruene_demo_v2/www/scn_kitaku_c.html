@@ -1,33 +1,65 @@
 ﻿<!DOCTYPE HTML>
 <html>
 <head>
-  <!-- シナリオ 防犯 -->
+  <!-- シナリオ 帰宅 -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <meta http-equiv="Content-Security-Policy" content="default-src * data:; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
     <script src="./js/jquery-1.11.3.min.js"></script>
-
     <link rel="stylesheet" href="css/style.css">
-
-
     <link rel="stylesheet" href="css/anime_btn.css">
     <script src="js/btn.js"></script>
-    <script src="js/ir_send.js"></script>
+    <script src="js/irkit.js"></script>
 
     <script src="js/scenario.js"></script>
 
 <style>
-
 	</style>
 
 
   <script>
     var opration_flag =  false; //操作されたかチェック
 	var scenario_post_str ;
+    	function  opration_check(myNavigator) {
+			 if(!opration_flag){
+				console.log("index");
+    			console.log("scenario_post_str:" +scenario_post_str);
+
+                scenario_exec(scenario_post_str);
+				// 家電機器初期設定
+                sendIRkit_init_command();
+                myNavigator.resetToPage("exp_index.html");
+			 } else{
+				console.log("index");
+			 }
+			 opration_flag=false;
+		}
 
 
+        var rep_hits_flag =  false; //連打防止
 
-    $(document).ready(function () {
+    	function  hits_flag() {
+			rep_hits_flag= true;
+		    setTimeout( function (){
+				console.log("disabled");
+				hits_flag =false ;
+		    } , 1000); 			
+		}
+
+
+    (function ($) {
+        $('#returnhomea').on('show', function(){
+            this.play();
+            console.log("aaa");
+        });
+        $('#returnhomeb').on('show', function(){
+            this.play();
+            console.log("cccc");
+        });
+
+    })(jQuery);
+
+$(document).ready(function(){
 		console.log("Onsen UI is ready!");
 		//
 		const OP_TIME = 1300; //操作画面への遷移
@@ -52,22 +84,24 @@
 		});
 
 
+        sendIRkit_init_command();
 
-
-		scenario_post_str ="SCENARIO_POST_CRIMEDEFEND";
-        scenario_exec("SCENARIO_CRIMEDEFEND");
-        console.log("scene_detail_heatstroke");
-
-
-		/*
-		// end 機器操作インデックス
+        /*
+		// begin 機器操作インデックス
 		*/
 
-        //シナリオインデクス(戻る)
-        $(document).on('click', '.exp_index', function (e) {
-            console.log("シナリオインデクス(戻る)");
-            localtion.href = "scn_menu.html";
-        });
+		//起床
+		scenario_post_str ="SCENARIO_POST_WAKEUP";
+	   scenario_exec("SCENARIO_WAKEUP");
+	
+
+		//シナリオインデクス
+		$(document).on('click','.exp_index',function(e) {
+            sendIRkit_init_command();
+             scenario_exec(scenario_post_str);
+            console.log("exp_index");
+			myNavigator.resetToPage("exp_index.html");
+		});
 
 
     });
@@ -78,25 +112,19 @@
 <body>
 
  <!-- 
-　　　防犯シナリオ
+	起床	
+	朝起きると、オーディオがオンになり、
+	カーテンが開きます。
 	映像終了後（映像は静止状態）に演出照明がOFF、５秒後にカーテンが閉まり、
-	
 	 -->
-
-
     <div style="position: relative;margin: 0px; padding: 0px;width:100%;height: auto;">
-        <video src="./movie/bohan.mp4" preload="none" class="movie_field" autoplay id="video"> </video>
+        <img border="0" src="./hdimages/bk_kitaku_c.png" style="position: absolute;top:0;left:0">
         <img src="./hdimages/bk_house.png" class="photo scene_frame small_view ">
-        <img src="./hdimages/red_scn_curtain.png" class="scene_frame blink_anime small_view scenario-aircom">
-        <img src="./hdimages/scn_shomei.png" class="scene_frame blink_anime small_view scenario-cur">
-        <img border="0" src="./hdimages/bk_bohan.png" style="position: absolute;top:0;left:0">
-
-        <div id="scene_top_button">
+        <img src="./hdimages/red_scn_shomei.png" class="scene_frame blink_anime small_view scenario-aircom">
+        <img src="./hdimages/red_scn_aircon.png" class="scene_frame blink_anime small_view scenario-cur">
+        <div class="scene_top_button">
             <img border="0" src="./hdimages/btn_scn_return.png" class="btn_tap_anim exp_index" style="position: absolute;left: 2289px;top:1409px" alt="機器の操作に戻る">
         </div>
     </div>
-
-
-    
 </body>
 </html>

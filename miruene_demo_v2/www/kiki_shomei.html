@@ -132,6 +132,7 @@
 			purifier_hum_txt1.innerHTML = humd_value ; 
     		aircon_temp_txt1.innerHTML = temperature_value ; 
             
+    		var light_bright = 3;
 		// 一定期間操作がなければ　機器操作index
     	
 		setInterval(opration_check(),NO_OPRATIN_TIME); //
@@ -193,7 +194,7 @@
 		$(document).on('click','#light_bright',function(e) {
              if (light_bright < 5) {
 				light_bright++;
-				var t= "LIGHT_BRIGHT" + light_bright ;
+				var t = "LIGHT_STEP" + light_bright;
 				sendIRUSB_command(t);
 			}
 	            console.log("light_bright");
@@ -213,9 +214,12 @@
 
 		//イベント
 		$(document).on('click','#light_dark',function(e) {
-		    if (light_bright > 0) {
+		    console.log("light_step:" + light_bright);
+
+		    if (light_bright > 1) {
 				light_bright--;
 				var t = "LIGHT_STEP" + light_bright;
+				console.log("light_dark"+t);
 				sendIRUSB_command(t);
 			}
 			console.log("light_dark");

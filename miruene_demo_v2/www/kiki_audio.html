@@ -7,9 +7,11 @@
     <meta http-equiv="Content-Security-Policy" content="default-src * data:; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
     <script src="./js/jquery-1.11.3.min.js"></script>
 
+    <script src="./js/keycheck.js"></script>
+
     <link rel="stylesheet" href="css/style.css">
 
-    <script src="js/irkit.js"></script>
+    <script src="js/ir_send.js"></script>
     <script src="js/scenario.js"></script>
 
 
@@ -27,11 +29,10 @@
         function  use_vibrate() {
             navigator.vibrate(100);
         }
-        function  opration_check(myNavigator) {
+        function  opration_check() {
              if(!opration_flag){
                 console.log("index");
     			// 家電機器初期設定
-                sendIRkit_init_command();
                 scenario_exec("SCENARIO_ALLT_RESET");
 				var val = DEFAULT_TEMPERATURE; //エアコン温度表示
                 location.href="kiki_menu.html";
@@ -58,7 +59,6 @@
 
 		 // clearInterval(opration_check);
 
-        sendIRkit_init_command();
         scenario_exec("SCENARIO_ALLT_RESET");
 
         var rep_hits_flag =  false; //操作されたかチェック
@@ -88,55 +88,29 @@
 
 		//オーディオ
 		$(document).on('click','#audio_power',function(e) {
-			if(rep_hits_flag){
-				console.log("連打禁止");
-				return ;
-			}
-    		hits_flag();
-
-			sendIRkit_command("AUDIO_ON");
+			sendIRUSB_command("AUDIO_ON");
 			console.log("audio_power");
 		});
 
 
 		$(document).on('click','#audio_play',function(e) {
-			if(rep_hits_flag){
-				console.log("連打禁止");
-				return ;
-			}
-    		hits_flag();
-			sendIRkit_command("AUDIO_PLAY");
+			sendIRUSB_command("AUDIO_PLAY");
 			console.log("audio_play");
 		});
 
 		$(document).on('click','#audio_stop',function(e) {
-			if(rep_hits_flag){
-				console.log("連打禁止");
-				return ;
-			}
-    		hits_flag();
-			sendIRkit_command("AUDIO_STOP");
+			sendIRUSB_command("AUDIO_STOP");
 			console.log("audio_stop");
 		});
 
 		$(document).on('click','#audio_ffskip',function(e) {
-			if(rep_hits_flag){
-				console.log("連打禁止");
-				return ;
-			}
-    		hits_flag();
-			sendIRkit_command("AUDIO_FFSKIP");
+			sendIRUSB_command("AUDIO_FFSKIP");
 			console.log("audio_ffskip");
 		});
 
 
 		$(document).on('click','#audio_revskip',function(e) {
-			if(rep_hits_flag){
-				console.log("連打禁止");
-				return ;
-			}
-    		hits_flag();
-			sendIRkit_command("AUDIO_REVSKIP");
+			sendIRUSB_command("AUDIO_REVSKIP");
 			console.log("audio_revskip");
 		});
 
@@ -144,12 +118,6 @@
 
 		//機器操作インデクス
 		$(document).on('click','.op_index',function(e) {
-
-            if(rep_hits_flag){
-				console.log("連打禁止");
-				return ;
-			}
-    		hits_flag();
 			console.log("op_index");
             location.href="kiki_menu.html";
 		});
@@ -170,8 +138,8 @@
 			<img border="0" src="./hdimages/btn_audio_power.png"  id="audio_power" class="btn_tap_anim btn_tap_sound" style="position:absolute;left:896px;top:455px;" alt="オーディオPOWER">
 			<img border="0" src="./hdimages/btn_audio_play.png"  id="audio_play"  class="btn_tap_anim btn_tap_sound" style="position:absolute;left:896px;top:677px" alt="オーディオPLAY">
 			<img border="0" src="./hdimages/btn_audio_stop.png"  id="audio_stop" class="btn_tap_anim btn_tap_sound" style="position:absolute;left:896px;top:899px" alt="オーディオSTOP">
-			<img border="0" src="./hdimages/btn_audio_skip.png"  id="audio_stop" class="btn_tap_anim btn_tap_sound" style="position:absolute;left:896px;top:1121px" alt="オーディオスキップN">
-			<img border="0" src="./hdimages/btn_audio_back.png"  id="audio_ffskip"  class="btn_tap_anim btn_tap_sound" style="position:absolute;left:896px;top:1343px" alt="オーディオ逆スキップ">
+			<img border="0" src="./hdimages/btn_audio_skip.png"  id="audio_ffskip" class="btn_tap_anim btn_tap_sound" style="position:absolute;left:896px;top:1121px" alt="オーディオスキップN">
+			<img border="0" src="./hdimages/btn_audio_back.png"  id="audio_revskip"  class="btn_tap_anim btn_tap_sound" style="position:absolute;left:896px;top:1343px" alt="オーディオ逆スキップ">
             <img border="0" src="./hdimages/btn_kiki_return.png" alt="戻る" class="btn_tap_anim btn_tap_sound op_index" style="position:absolute;left:145px;top:1424px;">    	</a>
 		</div>
 

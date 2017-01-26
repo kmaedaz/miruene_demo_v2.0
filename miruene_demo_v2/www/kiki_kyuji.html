@@ -13,7 +13,7 @@
 
     <link rel="stylesheet" href="css/style.css">
 
-    <script src="js/irkit.js"></script>
+    <script src="js/ir_send.js"></script>
     <script src="js/scenario.js"></script>
 
 
@@ -50,14 +50,13 @@
 
 		// pet food 
 		$(document).on('click','#pet_feeder',function(e) {
-			sendIRkit_command("PET_FEEDER_PLAY");
+		    sendIRUSB_command("PET_FOOD_PLAY");
 			console.log("pet_feeder");
 		});
 
 		//機器操作インデクス
 		$(document).on('click','.op_index',function(e) {
-			console.log("op_index");
-            sendIRkit_init_command();
+		    console.log("機器操作インデクス");
             location.href = "kiki_menu.html";
 		});
 
@@ -77,9 +76,7 @@
 -->
 <div style="position: relative;margin: 0px; padding: 0px;width:100%;height: auto;">
     <img border="0" src="./hdimages/bk_kyuji.png"  style="position: absolute;top:0;left:0">
-
     <img border="0" src="./hdimages/btn_kyuji_ageru.png" id="pet_feeder"  alt="エサを与える" class="btn_tap_anim btn_tap_sound" style="position:absolute;left:493px;top:657px" >
-
     <img border="0" src="./hdimages/btn_kiki_return.png" alt="戻る" class="btn_tap_anim btn_tap_sound op_index" style="position:absolute;left:145px;top:1424px;">    	</a>
 </div>
 </body>

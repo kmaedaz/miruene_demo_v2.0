@@ -78,7 +78,6 @@
 
 		 // clearInterval(opration_check);
 
-        sendIRkit_init_command();
         scenario_exec("SCENARIO_ALLT_RESET");
 
         var rep_hits_flag =  true; //操作されたかチェック
@@ -141,8 +140,6 @@
 
 		//機器操作インデクス
 		$(document).on('click','.op_index',function(e) {
-			console.log("op_index");
-            sendIRkit_init_command();
             location.href="kiki_menu.html";
 		});
 
