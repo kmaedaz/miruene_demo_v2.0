@@ -5,6 +5,8 @@
     width :2736px;
     height:1824px;
     zoom:0.5;
+    overflow-x: hidden;
+    overflow-y: hidden;
 }
 
 .page__background {

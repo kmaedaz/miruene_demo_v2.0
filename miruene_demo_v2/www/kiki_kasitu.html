@@ -15,7 +15,7 @@
 
     <link rel="stylesheet" href="css/style.css">
 
-    <script src="js/irkit.js"></script>
+    <script src="js/ir_send.js"></script>
     <script src="js/scenario.js"></script>
 
 
@@ -107,22 +107,12 @@
 
 		// 加湿空気清浄機
 		$(document).on('click','#purifier_on',function(e) {
-			if(rep_hits_flag){
-				console.log("連打禁止");
-				return ;
-			}
-    		hits_flag(this);
-			sendIRkit_command("PURIFER_ON");
+		    sendIRUSB_command("KASHITU_ON");
 			console.log("purifier_on");
 		});
 
 		$(document).on('click','#purifier_off',function(e) {
-			if(rep_hits_flag){
-				console.log("連打禁止");
-				return ;
-			}
-    		hits_flag(this);
-			sendIRkit_command("PURIFER_OFF");
+		    sendIRUSB_command("KASHITU_OFF");
 			console.log("purifier_off");
 		});
 
@@ -130,11 +120,6 @@
 		$(document).on('click','#purifier_up',function(e) {
     			console.log("purifier_up" + humd_value);
         		console.log("purifier_up" + purifier_hum_txt1);
-            if(rep_hits_flag){
-				console.log("連打禁止");
-				return ;
-			}
-    		hits_flag(this);
 			//
 			if(humd_value <80){
 				humd_value +=  10 ;
@@ -145,11 +130,6 @@
 
 
 		$(document).on('click','#purifier_down',function(e) {
-			if(rep_hits_flag){
-				console.log("連打禁止");
-				return ;
-			}
-    		hits_flag(this);
 			//
 			if(humd_value >50 ){
     			humd_value -= 10 ;
@@ -161,11 +141,6 @@
 
 		//機器操作インデクス
 		$(document).on('click','.op_index',function(e) {
-            if(rep_hits_flag){
-				console.log("連打禁止");
-				return ;
-			}
-    		hits_flag(this);
 			console.log("op_index");
             sendIRkit_init_command();
             location.href="kiki_menu.html";
@@ -173,8 +148,6 @@
 
     	$(document).on('click',function(e) {
 		});
-
-
     });
 
   </script>
@@ -194,10 +167,7 @@
 		    <img border="0" src="./hdimages/btn_kasitu_up.png" id="purifier_up"  alt="上がる" class="btn_tap_anim btn_tap_sound" style="position:absolute;left:1445px;top:962px;" >
 		    <img border="0" src="./hdimages/btn_kasitu_down.png" id="purifier_down"  alt="下げる" class="btn_tap_anim btn_tap_sound" style="position:absolute;left:1445px;top:1123px" >
             <img border="0" src="./hdimages/btn_kiki_return.png" alt="戻る" class="btn_tap_anim btn_tap_sound op_index" style="position:absolute;left:145px;top:1424px;">    	</a>
-
-
-
 		</div>
-    
+   
 </body>
 </html>
