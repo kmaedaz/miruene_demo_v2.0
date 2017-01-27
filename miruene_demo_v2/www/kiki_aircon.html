@@ -66,10 +66,6 @@
   <script>
         var opration_flag =  true; //操作されたかチェック
         const DEFAULT_TEMPERATURE=25;// エアコン初期温度
-        const DEFAULT_HUMD =50 ;
-        function  use_vibrate() {
-            navigator.vibrate(100);
-        }
         function  opration_check() {
              if(!opration_flag){
                 console.log("index");
@@ -86,10 +82,6 @@
 		setBtnAnim();
 		setBtnSound();
   		//
-		const OP_TIME = 200; //操作画面への遷移
-		const NEXTPAGE_TIME = 3400; //操作画面への遷移
-		const NO_OPRATIN_TIME = 30000; //何もしなければ操作画面への遷移
-
 		var temperature_value = DEFAULT_TEMPERATURE; //既定値
 		var aircon_temp_txt1 =  $("#aircon_temp_txt"); //エアコン温度表示
     	var purifier_hum_txt1 = $("#purifier_hum_txt"); //湿度表示
@@ -202,8 +194,8 @@
 
     <img border="0" src="./hdimages/bk_aircon.png"  style="position: absolute;top:0;left:0">
     <img border="0" src="./hdimages/btn_aircon_power.png" id="aircon_power"  alt="電源" class="btn_tap_anim btn_tap_sound" style="position:absolute;left:639px;top:455px" >
-    <img border="0" src="./hdimages/btn_aircon_up.png" id="aircon_up"  alt="温度上"  class=" btn_tap_sound" style="position:absolute;left:1445px;top:962px" >
-    <img border="0" src="./hdimages/btn_aircon_down.png"  id="aircon_down" alt="温度下"  class=" btn_tap_sound" style="position:absolute;left:1445px;top:1122px" >
+    <img border="0" src="./hdimages/btn_aircon_up.png" id="aircon_up"  alt="温度上"  class="btn_tap_anim btn_tap_sound" style="position:absolute;left:1445px;top:962px" >
+    <img border="0" src="./hdimages/btn_aircon_down.png"  id="aircon_down" alt="温度下"  class="btn_tap_anim btn_tap_sound" style="position:absolute;left:1445px;top:1122px" >
 
     <div id="aircon_temp_txt" >25</div>
 

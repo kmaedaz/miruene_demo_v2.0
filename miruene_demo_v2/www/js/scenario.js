@@ -113,7 +113,6 @@ function scenario_play(scenario_arr) {
             } , n*300);
         } else if( key=="VIDEO"){
 
-/*  OUNSEN UI VIDEO　オブジェクトがうまく取得できないので暫定廃止
             
                 val ="video#returnhome.movie_field";
                 console.log("VIDEO:"+val+"src:"+src);
@@ -128,9 +127,7 @@ function scenario_play(scenario_arr) {
                 //video_tmp.currentSrc =src;
                 video_tmp.src =src;
 
-//                video_tmp.load();
-//                video_tmp.play();
-*/
+                video_tmp.play();
                 setTimeout(    function (){
                     scenario_play(next_arr);
                 } , n);
