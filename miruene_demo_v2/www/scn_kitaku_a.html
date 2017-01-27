@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/anime_btn.css">
     <script src="js/btn.js"></script>
-    <script src="js/irkit.js"></script>
 
     <script src="js/scenario.js"></script>
 
@@ -20,53 +19,14 @@
   <script>
     var opration_flag =  false; //操作されたかチェック
 	var scenario_post_str ;
-    	function  opration_check(myNavigator) {
-			 if(!opration_flag){
-				console.log("index");
-    			console.log("scenario_post_str:" +scenario_post_str);
-
-                scenario_exec(scenario_post_str);
-				// 家電機器初期設定
-                sendIRkit_init_command();
-                myNavigator.resetToPage("exp_index.html");
-			 } else{
-				console.log("index");
-			 }
-			 opration_flag=false;
-		}
-
-
-        var rep_hits_flag =  false; //連打防止
-
-    	function  hits_flag() {
-			rep_hits_flag= true;
-		    setTimeout( function (){
-				console.log("disabled");
-				hits_flag =false ;
-		    } , 1000); 			
-		}
-
-
-    (function ($) {
-        $('#returnhomea').on('show', function(){
-            this.play();
-            console.log("aaa");
-        });
-        $('#returnhomeb').on('show', function(){
-            this.play();
-            console.log("cccc");
-        });
-
-    })(jQuery);
 
 $(document).ready(function(){
-		console.log("Onsen UI is ready!");
 		//
 		const OP_TIME = 1300; //操作画面への遷移
 		const NEXTPAGE_TIME = 3000; //操作画面への遷移
 		const DEFAULT_TEMPERATURE=26;// 初期温度
     	const NO_OPRATIN_TIME = 38000; //何もしなければ操作画面への遷移
-		const RETURN_HOME_LATTER_HALF =12000 ;//･帰宅後半の動画開始
+		const RETURN_HOME_LATTER_HALF =9000 ;//･帰宅後半の動画開始
 
         setBtnAnim();	
 
@@ -75,34 +35,23 @@ $(document).ready(function(){
 		*/
     	// 一定期間操作がなければ　機器操作index
     	
-		setInterval("opration_check(myNavigator)",NO_OPRATIN_TIME); //
-    	//  すべて
-        scenario_exec("SCENARIO_ALLT_RESET");
 
         $(document).on('click',function(e) {
 		 opration_flag=true;
 		});
 
 
-        sendIRkit_init_command();
+        setTimeout(	function (){
+            location.href="scn_kitaku_b.html";
+        }, RETURN_HOME_LATTER_HALF);
+
 
         /*
 		// begin 機器操作インデックス
 		*/
-
-		//起床
-		scenario_post_str ="SCENARIO_POST_WAKEUP";
-	   scenario_exec("SCENARIO_WAKEUP");
-//	    myNavigator.resetToPage("scene_detail_wakup.html");  //起床
 	
 
 		//シナリオインデクス
-		$(document).on('click','.exp_index',function(e) {
-            sendIRkit_init_command();
-             scenario_exec(scenario_post_str);
-            console.log("exp_index");
-			myNavigator.resetToPage("exp_index.html");
-		});
 
 
     });
@@ -113,10 +62,7 @@ $(document).ready(function(){
 <body>
 
  <!-- 
-	起床	
-	朝起きると、オーディオがオンになり、
-	カーテンが開きます。
-	映像終了後（映像は静止状態）に演出照明がOFF、５秒後にカーテンが閉まり、
+     帰宅
 	 -->
     <div style="position: relative;margin: 0px; padding: 0px;width:100%;height: auto;">
         <video src="./movie/kitaku_kaish_a.mp4" preload="none" class="movie_field" autoplay id="video"> </video>
@@ -124,9 +70,6 @@ $(document).ready(function(){
         <img src="./hdimages/red_scn_shomei.png" class="scene_frame blink_anime small_view scenario-aircom">
         <img src="./hdimages/red_scn_aircon.png" class="scene_frame blink_anime small_view scenario-cur">
         <img border="0" src="./hdimages/bk_kitaku.png" style="position: absolute;top:0;left:0">
-        <div class="scene_top_button">
-            <img border="0" src="./hdimages/btn_scn_return.png" class="btn_tap_anim exp_index" style="position: absolute;left: 2289px;top:1409px" alt="機器の操作に戻る">
-        </div>
     </div>
 </body>
 </html>

@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/anime_btn.css">
     <script src="js/btn.js"></script>
-    <script src="js/irkit.js"></script>
+    <script src="js/ir_send.js"></script>
 
     <script src="js/scenario.js"></script>
 
@@ -35,7 +35,6 @@
 			 opration_flag=false;
 		}
 
-
         var rep_hits_flag =  false; //連打防止
 
     	function  hits_flag() {
@@ -46,18 +45,6 @@
 		    } , 1000); 			
 		}
 
-
-    (function ($) {
-        $('#returnhomea').on('show', function(){
-            this.play();
-            console.log("aaa");
-        });
-        $('#returnhomeb').on('show', function(){
-            this.play();
-            console.log("cccc");
-        });
-
-    })(jQuery);
 
 $(document).ready(function(){
 		console.log("Onsen UI is ready!");
@@ -75,34 +62,24 @@ $(document).ready(function(){
 		*/
     	// 一定期間操作がなければ　機器操作index
     	
-		setInterval("opration_check(myNavigator)",NO_OPRATIN_TIME); //
+		setInterval("opration_check()",NO_OPRATIN_TIME); //
     	//  すべて
-        scenario_exec("SCENARIO_ALLT_RESET");
 
         $(document).on('click',function(e) {
 		 opration_flag=true;
 		});
 
-
-        sendIRkit_init_command();
-
         /*
 		// begin 機器操作インデックス
 		*/
 
-		//起床
-		scenario_post_str ="SCENARIO_POST_WAKEUP";
-	   scenario_exec("SCENARIO_WAKEUP");
 	
 
-		//シナリオインデクス
-		$(document).on('click','.exp_index',function(e) {
-            sendIRkit_init_command();
-             scenario_exec(scenario_post_str);
-            console.log("exp_index");
-			myNavigator.resetToPage("exp_index.html");
-		});
-
+    //シナリオインデクス(戻る)
+	   $(document).on('click', '#scene_top_button', function (e) {
+	       console.log("シナリオインデクス(戻る)");
+	       location.href = "scn_menu.html";
+	   });
 
     });
 
@@ -122,8 +99,8 @@ $(document).ready(function(){
         <img src="./hdimages/bk_house.png" class="photo scene_frame small_view ">
         <img src="./hdimages/red_scn_shomei.png" class="scene_frame blink_anime small_view scenario-aircom">
         <img src="./hdimages/red_scn_aircon.png" class="scene_frame blink_anime small_view scenario-cur">
-        <div class="scene_top_button">
-            <img border="0" src="./hdimages/btn_scn_return.png" class="btn_tap_anim exp_index" style="position: absolute;left: 2289px;top:1409px" alt="機器の操作に戻る">
+        <div id="scene_top_button">
+            <img border="0" src="./hdimages/btn_scn_return.png" class="btn_tap_anim exp_index" style="position: absolute;left: 2289px;top:1409px;display:block;" alt="機器の操作に戻る">
         </div>
     </div>
 </body>

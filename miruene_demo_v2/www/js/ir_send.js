@@ -10,7 +10,8 @@ function sendIRUSB_command(val) {
     console.log("sendIRUSB_command" + val);
        //local IP
        $.ajax({
-            type     : "POST",
+           type: "POST",
+           timeout: 1000,
             url: "http://localhost:3000/",
             data: {
                 name: val

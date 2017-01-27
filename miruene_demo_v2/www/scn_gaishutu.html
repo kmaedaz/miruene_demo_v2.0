@@ -159,12 +159,8 @@
 		*/
 
 		//シナリオインデクス
-		$(document).on('click','.exp_index',function(e) {
-            sendIRkit_init_command();
-             scenario_exec(scenario_post_str);
-            console.log("exp_index");
-			myNavigator.resetToPage("exp_index.html");
-		});
+        $(document).on('click','#scene_top_button',function(e) {
+\		});
 
 
     });
@@ -181,7 +177,7 @@
         <img src="./hdimages/red_scn_aircon.png" class="scene_frame blink_anime small_view scenario-aircom">
         <img src="./hdimages/red_scn_shomei.png" class="scene_frame blink_anime small_view scenario-cur">
         <img border="0" src="./hdimages/bk_gaishutu.png" style="position: absolute;top:0;left:0">
-        <div class="scene_top_button">
+        <div id="scene_top_button">
             <img border="0" src="./hdimages/btn_scn_return.png" class="btn_tap_anim exp_index" style="position: absolute;left: 2289px;top:1409px" alt="機器の操作に戻る">
         </div>
     </div>
