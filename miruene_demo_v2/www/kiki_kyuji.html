@@ -19,6 +19,8 @@
 
     <link rel="stylesheet" href="css/anime_btn.css">
     <script src="js/btn.js"></script>
+    <script src="js/const.js"></script>
+
 
     <title>機器の操作</title>
     
@@ -28,22 +30,16 @@
 
   <script>
       var opration_flag = true; //操作されたかチェック
-      var rep_hits_flag = true;
-        function  opration_check() {
-             if(!opration_flag){
-                console.log("index");
-                location.href="kiki_menu.html";
-			 } else{
-				console.log("index");
-			 }
-			 opration_flag=false;
-		}
 
 
 	$(document).ready(function(){
 		console.log("Onsen UI is ready!");
         setBtnAnim(); 
         setBtnSound();
+
+		// 一定期間操作がなければ　機器操作index
+		setInterval(function(){opration_check('kiki_menu.html','')},NO_OPRATIN_TIME);
+
 		/*------------------------------
 		　家電操作
 		--------------------------------*/
@@ -55,21 +51,24 @@
 		});
 
 		//機器操作インデクス
-		$(document).on('click','.op_index',function(e) {
+		$(document).on('click','#op_index',function(e) {
 		    console.log("機器操作インデクス");
-            location.href = "kiki_menu.html";
+			setTimeout(function () {
+			location.href="kiki_menu.html";
+			}, 500);
 		});
 
-    	$(document).on('click',function(e) {
+		//  すべて
+		$(document).on('click',function(e) {
+		 opration_flag=true;
 		});
-
 
     });
 
   </script>
 </head>
 
-<body>
+<body oncontextmenu="return false;">
 
 <!- 
 自動給餌器 操作
@@ -77,7 +76,7 @@
 <div style="position: relative;margin: 0px; padding: 0px;width:100%;height: auto;">
     <img border="0" src="./hdimages/bk_kyuji.png"  style="position: absolute;top:0;left:0">
     <img border="0" src="./hdimages/btn_kyuji_ageru.png" id="pet_feeder"  alt="エサを与える" class="btn_tap_anim btn_tap_sound" style="position:absolute;left:493px;top:657px" >
-    <img border="0" src="./hdimages/btn_kiki_return.png" alt="戻る" class="btn_tap_anim btn_tap_sound op_index" style="position:absolute;left:145px;top:1424px;">    	</a>
+    <img border="0" src="./hdimages/btn_kiki_return.png" id="op_index" alt="戻る" class="btn_tap_anim btn_tap_sound" style="position:absolute;left:145px;top:1424px;">    	</a>
 </div>
 </body>
 </html>

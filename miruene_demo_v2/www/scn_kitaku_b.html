@@ -19,34 +19,6 @@
 
   <script>
     var opration_flag =  false; //操作されたかチェック
-	var scenario_post_str ;
-    	function  opration_check(myNavigator) {
-			 if(!opration_flag){
-				console.log("index");
-    			console.log("scenario_post_str:" +scenario_post_str);
-
-                scenario_exec(scenario_post_str);
-				// 家電機器初期設定
-                sendIRkit_init_command();
-                myNavigator.resetToPage("exp_index.html");
-			 } else{
-				console.log("index");
-			 }
-			 opration_flag=false;
-		}
-
-
-        var rep_hits_flag =  false; //連打防止
-
-    	function  hits_flag() {
-			rep_hits_flag= true;
-		    setTimeout( function (){
-				console.log("disabled");
-				hits_flag =false ;
-		    } , 1000); 			
-		}
-
-
 
 $(document).ready(function(){
 		console.log("Onsen UI is ready!");
@@ -73,8 +45,7 @@ $(document).ready(function(){
     	
 		setInterval("opration_check()",NO_OPRATIN_TIME); //
     	//  すべて
-        scenario_exec("SCENARIO_ALLT_RESET");
-
+ 
         $(document).on('click',function(e) {
 		 opration_flag=true;
 		});
@@ -85,9 +56,6 @@ $(document).ready(function(){
 		// begin 機器操作インデックス
 		*/
 
-		//帰宅
-		scenario_post_str ="SCENARIO_POST_WAKEUP";
-		scenario_exec("SCENARIO_RETURNING");
 	
 
 
@@ -97,7 +65,7 @@ $(document).ready(function(){
   </script>
 
 </head>
-<body>
+<body oncontextmenu="return false;">
 
  <!-- 
 	 -->

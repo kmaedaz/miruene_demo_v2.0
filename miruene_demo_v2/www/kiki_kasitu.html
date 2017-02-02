@@ -10,48 +10,27 @@
     <!-- 効果音-->
     <script src="./js/ion.sound.min.js"></script>
     <script src="./js/sound.js"></script>
-
-
-
     <link rel="stylesheet" href="css/style.css">
-
     <script src="js/ir_send.js"></script>
     <script src="js/scenario.js"></script>
-
-
     <link rel="stylesheet" href="css/anime_btn.css">
     <script src="js/btn.js"></script>
+    <script src="js/const.js"></script>
 
     <title>機器の操作加湿</title>
-    
-
     <style>
     #purifier_hum_txt {
     position: absolute;
-    font-size: 16.4em;
-    font-weight: bold;
-    top: 1050px;
-    Left: 720px;
+    font-size: 17.1em;
+    color: #808080;
+    top: 1030px;
+    Left: 728px;
     }
-
     </style>
 
+
   <script>
-		const OP_TIME = 200; //操作画面への遷移
-		const NEXTPAGE_TIME = 3400; //操作画面への遷移
-		const NO_OPRATIN_TIME = 30000; //何もしなければ操作画面への遷移
         var opration_flag =  true; //操作されたかチェック
-        const DEFAULT_TEMPERATURE=25;// エアコン初期温度
-        const DEFAULT_HUMD =50 ;
-        function  opration_check() {
-             if(!opration_flag){
-                console.log("index");
-                location.href="kiki_menu.html";
-			 } else{
-				console.log("index");
-			 }
-			 opration_flag=false;
-		}
 
 
         $(document).ready(function () {
@@ -59,9 +38,6 @@
 		setBtnAnim();
 		setBtnSound();
   		//
-		const OP_TIME = 200; //操作画面への遷移
-		const NEXTPAGE_TIME = 3400; //操作画面への遷移
-		const NO_OPRATIN_TIME = 30000; //何もしなければ操作画面への遷移
 
     	var purifier_hum_txt1 = $("#purifier_hum_txt"); //湿度表示
 		var humd_value = DEFAULT_HUMD; //既定値
@@ -73,21 +49,11 @@
 
 		// 一定期間操作がなければ　機器操作index
     	
-		setInterval(opration_check(),NO_OPRATIN_TIME); //
+		setInterval(function(){opration_check('kiki_menu.html','')},NO_OPRATIN_TIME);
 
 
 		 // clearInterval(opration_check);
 
-
-        var rep_hits_flag =  true; //操作されたかチェック
-
-    	function  hits_flag(v) {
-			rep_hits_flag= true;
-            setTimeout( function (){
-				console.log("kye enabled");
-				rep_hits_flag =false ;
-		    } , 1500); 			
-		}
 
 		/*
 			イベントハンドラー
@@ -119,7 +85,7 @@
     			console.log("purifier_up" + humd_value);
         		console.log("purifier_up" + purifier_hum_txt1);
 			//
-			if(humd_value <80){
+			if(humd_value <70){
 				humd_value +=  10 ;
     			purifier_hum_txt.innerHTML = humd_value ; 
 			}
@@ -139,17 +105,17 @@
 
 		//機器操作インデクス
 		$(document).on('click','.op_index',function(e) {
-            location.href="kiki_menu.html";
+			setTimeout(function () {
+			location.href="kiki_menu.html";
+			}, 500);
 		});
 
-    	$(document).on('click',function(e) {
-		});
     });
 
   </script>
 </head>
 
-<body>
+<body oncontextmenu="return false;">
 
     <!-- 
 	加湿空気清浄機 操作
@@ -160,9 +126,16 @@
 		    <img border="0" src="./hdimages/btn_kasitu_power.png" id="purifier_on"  alt="電源" class="btn_tap_anim btn_tap_sound" style="position:absolute;left:639px;top:455px;" >
             <!--温度表示-->
         	<div id="purifier_hum_txt">50</div>
+<!--
+    
 		    <img border="0" src="./hdimages/btn_kasitu_up.png" id="purifier_up"  alt="上がる" class="btn_tap_anim btn_tap_sound" style="position:absolute;left:1445px;top:962px;" >
 		    <img border="0" src="./hdimages/btn_kasitu_down.png" id="purifier_down"  alt="下げる" class="btn_tap_anim btn_tap_sound" style="position:absolute;left:1445px;top:1123px" >
-            <img border="0" src="./hdimages/btn_kiki_return.png" alt="戻る" class="btn_tap_anim btn_tap_sound op_index" style="position:absolute;left:145px;top:1424px;">    	</a>
+-->
+            <img border="0" src="./hdimages/btn_kasitu_up.png" id="purifier_up" alt="上がる" class=" btn_tap_sound" style="position:absolute;left:1445px;top:962px;">
+            <img border="0" src="./hdimages/btn_kasitu_down.png" id="purifier_down" alt="下げる" class=" btn_tap_sound" style="position:absolute;left:1445px;top:1123px">
+
+
+            <img border="0" src="./hdimages/btn_kiki_return.png" alt="戻る" class="btn_tap_anim btn_tap_sound op_index" style="position:absolute;left:145px;top:1424px;">
 		</div>
    
 </body>

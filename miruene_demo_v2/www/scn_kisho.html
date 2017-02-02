@@ -7,9 +7,14 @@
     <meta http-equiv="Content-Security-Policy" content="default-src * data:; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
     <script src="./js/jquery-1.11.3.min.js"></script>
     <link rel="stylesheet" href="css/style.css">
+     <!-- 効果音-->
+    <script src="./js/ion.sound.min.js"></script>
+    <script src="./js/sound.js"></script>
+
     <link rel="stylesheet" href="css/anime_btn.css">
     <script src="js/btn.js"></script>
     <script src="js/ir_send.js"></script>
+    
 
     <script src="js/scenario.js"></script>
 
@@ -36,13 +41,14 @@ $(document).ready(function(){
 		const RETURN_HOME_LATTER_HALF =12000 ;//･帰宅後半の動画開始
 
         setBtnAnim();	
+		setBtnSound();
 
 		/*
 			イベントハンドラー
 		*/
     	// 一定期間操作がなければ　機器操作index
     	
-		setInterval("opration_check()",NO_OPRATIN_TIME); //
+		setInterval(function(){opration_check('scn_menu.html','SCENARIO_POST_WAKEUP')},NO_OPRATIN_TIME);
     	//  すべて
 
         $(document).on('click',function(e) {
@@ -63,7 +69,10 @@ $(document).ready(function(){
     //シナリオインデクス(戻る)
 	   $(document).on('click', '#scene_top_button', function (e) {
 	       console.log("シナリオインデクス(戻る)");
-	       location.href = "scn_menu.html";
+		   scenario_exec("SCENARIO_POST_WAKEUP");
+			setTimeout(	function (){
+				location.href="scn_menu.html";
+			} , 2500);					
 	   });
 
 
@@ -72,7 +81,7 @@ $(document).ready(function(){
   </script>
 
 </head>
-<body>
+<body oncontextmenu="return false;">
 
  <!-- 
 	起床	
@@ -84,10 +93,10 @@ $(document).ready(function(){
         <video src="./movie/kisho.mp4" preload="none" class="movie_field" autoplay id="video"> </video>
         <img src="./hdimages/bk_house.png" class="photo scene_frame small_view ">
         <img src="./hdimages/red_scn_curtain.png" class="scene_frame blink_anime small_view scenario-aircom">
-        <img src="./hdimages/scn_audio.png" class="scene_frame blink_anime small_view scenario-cur">
+        <img src="./hdimages/red_scn_audio.png" class="scene_frame blink_anime small_view scenario-cur">
         <img border="0" src="./hdimages/bk_kisho.png" style="position: absolute;top:0;left:0">
         <div id="scene_top_button">
-            <img border="0" src="./hdimages/btn_scn_return.png" class="btn_tap_anim exp_index" style="position: absolute;left: 2289px;top:1409px" alt="機器の操作に戻る">
+            <img border="0" src="./hdimages/btn_scn_return.png" class="btn_tap_anim btn_tap_sound exp_index" style="position: absolute;left: 2289px;top:1409px" alt="機器の操作に戻る">
         </div>
     </div>
 </body>

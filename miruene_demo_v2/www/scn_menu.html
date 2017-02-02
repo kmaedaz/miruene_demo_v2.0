@@ -15,47 +15,76 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/anime_btn.css">
     <script src="js/btn.js"></script>
+    <script src="./js/keycheck.js"></script>
+
     <script>
       $(document).ready(function () {
       console.log(" UI is ready!");
       setBtnAnim();
       setBtnSound();
-      scenario_exec("SCENARIO_ALLT_RESET");
+      scenario_exec("SCENARIO_ALL_RESET"); //機器初期化
+
+
+
+		//　熱中症
+		$(document).on('click','#scn_nechu',function(e) {
+			wait_location("scn_nechu.html",400);
+		});
+
+
+		//　防犯
+		$(document).on('click','#scn_bohan',function(e) {
+			wait_location("scn_bohan.html",400);
+		});
+
+		//　起床
+		$(document).on('click','#scn_kisho',function(e) {
+			wait_location("scn_kisho.html",400);
+		});
+
+
+		//　外出
+		$(document).on('click','#scn_gaishutu',function(e) {
+			wait_location("scn_gaishutu.html",400);
+		});
+
+		//　帰宅
+		$(document).on('click','#scn_kitaku_a',function(e) {
+			wait_location("scn_kitaku_a.html",400);
+		});
+
+
+		//機器操作インデクス
+		$(document).on('click','#top_menu',function(e) {
+			wait_location("top_menu.html",400);
+		});
+
+
+
+
 
     });
 
     </script>
 </head>
-<body>
+<body oncontextmenu="return false;">
 
     <div style="position: relative;margin: 0px; padding: 0px;width:100%;height: auto;">
         <img border="0" src="./hdimages/bk_scn_menu.png" width="2736" height="1824" style="position: absolute;top:0;left:0">
 
-        <a href="scn_nechu.html">
-            <img border="0" src="./hdimages/btn_nechu.png " class="btn_tap_anim btn_tap_sound" alt="熱中症予防" style="position:absolute;left:578px;top:551px;">
-        </a>
+            <img border="0" src="./hdimages/btn_nechu.png" id="scn_nechu" class="btn_tap_anim btn_tap_sound" alt="熱中症予防" style="position:absolute;left:578px;top:551px;">
 
-        <a href="scn_bohan.html">
-            <img border="0" src="./hdimages/btn_bohan.png " class="btn_tap_anim btn_tap_sound" alt="防犯" style="position:absolute;left:578px;top:742px;">
-        </a>
+            <img border="0" src="./hdimages/btn_bohan.png " id="scn_bohan" class="btn_tap_anim btn_tap_sound" alt="防犯" style="position:absolute;left:578px;top:742px;">
 
+            <img border="0" src="./hdimages/btn_kisho.png " id="scn_kisho" class="btn_tap_anim btn_tap_sound" alt="起床" style="position:absolute;left:578px;top:932px;">
 
-        <a href="scn_kisho.html">
-            <img border="0" src="./hdimages/btn_kisho.png " class="btn_tap_anim btn_tap_sound" alt="起床" style="position:absolute;left:578px;top:932px;">
-        </a>
+            <img border="0" src="./hdimages/btn_gaishutu.png" id="scn_gaishutu" class="btn_tap_anim btn_tap_sound" alt="外出" style="position:absolute;left:578px;top:1122px;">
 
-        <a href="scn_gaishutu.html">
-            <img border="0" src="./hdimages/btn_gaishutu.png " class="btn_tap_anim btn_tap_sound" alt="外出" style="position:absolute;left:578px;top:1122px;">
-        </a>
+            <img border="0" src="./hdimages/btn_kitaku.png " id="scn_kitaku_a" class="btn_tap_anim btn_tap_sound" alt="帰宅前半" style="position:absolute;left:578px;top:1312px;">
 
-        <a href="scn_kitaku_a.html">
-            <img border="0" src="./hdimages/btn_kitaku.png " class="btn_tap_anim btn_tap_sound" alt="帰宅前半" style="position:absolute;left:578px;top:1312px;">
-        </a>
-        <a href="./top_menu.html">
-            <img border="0" src="./hdimages/btn_return.png" class="btn_tap_anim btn_tap_sound" style="position:absolute;left:144px;top:1424px;" alt="トップに戻る">
-        </a>
+            <img border="0" src="./hdimages/btn_return.png"  id="top_menu"  class="btn_tap_anim btn_tap_sound" style="position:absolute;left:144px;top:1424px;" alt="トップに戻る">
+
     </div>
-
 
 </body>
 </html>

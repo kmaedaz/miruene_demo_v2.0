@@ -1,18 +1,20 @@
 // ボタンハイライト設定JS
 
 function setBtnAnim() {
-	// ボタンタップ開始時、終了時にアニメーションクラスを与える
-	$('.btn_tap_anim' ).bind('touchstart mousedown',	function() { $(this).addClass('btn_tap_anim_on');
+    // ボタンタップ開始時、終了時にアニメーションクラスを与える
+    $('.btn_tap_anim' ).bind('touchstart mousedown touchenter',    function(event) { 
+		console.log("setBtnAnim");
+		event.preventDefault();
+		$(this).addClass('btn_tap_anim_on');
     });
 
-    $('.btn_tap_anim').bind('touchmove touchend mouseup mouseout',	function() {
+    $('.btn_tap_anim').bind('touchmove touchend mouseup mouseout',  function(event) {
+	     event.preventDefault();
         $(this).removeClass('btn_tap_anim_on');
 
         });
 
-
 }
-
 
 
 

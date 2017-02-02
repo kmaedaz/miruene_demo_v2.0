@@ -10,10 +10,10 @@
 	
 	/* タップ時のCSSアニメーション設定 */
 	.btn_tap_anim_on {
-		-webkit-transition: 200ms;
-		-webkit-transform: scale(0.95);
-    	transition: 200ms;
-		transform: scale(0.95);
+		-webkit-transition: 250ms;
+		-webkit-transform: scale(0.96);
+    	transition: 250ms;
+		transform: scale(0.96);
 
     }
 	

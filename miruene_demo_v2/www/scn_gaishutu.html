@@ -11,140 +11,44 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/anime_btn.css">
     <script src="js/btn.js"></script>
-    <script src="js/irkit.js"></script>
+    <script src="js/ir_send.js"></script>
+
+     <!-- 効果音-->
+    <script src="./js/ion.sound.min.js"></script>
+    <script src="./js/sound.js"></script>
 
     <script src="js/scenario.js"></script>
-
-<style>
-
-    #aircon_panel{
-        position: relative;
-        width:80%;
-    }
-
-    #aircon_base{
-        position: relative;
-    }
-
-    
-    
-    #aircon_up {
-        position: absolute;
-        top: 34px;
-        Left: 390px;
-    }
-    
-    #aircon_down {
-        position: absolute;
-        top: 104px;
-        Left: 390px;
-    }
-    #aircon_temp_txt {
-        position: absolute;
-        font-size: 1.8em;
-        font-weight: bold;
-        top: 64px;
-        Left: 124px;
-    }
-    
-
-    //TV
-	#tv_power_base{
-	    position: relative;
-	}
-
-	  #tv_power {
-    position: absolute;
-    top: 170px;
-    Left: 68px;
-	}
-
-	#tv_ch_base {
-	    position: relative;
-	}
-
-
-	 #tv_ch_up{
-        position: absolute;
-        top: 140px;
-        Left: 68px;
-        
-	}
-
-	 #tv_ch_down{
-        position: absolute;
-        top: 360px;
-        Left: 68px;
-	}
-
-	</style>
+    <script src="js/keycheck.js"></script>
+    <script src="js/const.js"></script>
 
 
   <script>
     var opration_flag =  false; //操作されたかチェック
 	var scenario_post_str ;
-    	function  opration_check(myNavigator) {
-			 if(!opration_flag){
-				console.log("index");
-    			console.log("scenario_post_str:" +scenario_post_str);
 
-                scenario_exec(scenario_post_str);
-				// 家電機器初期設定
-                sendIRkit_init_command();
-                myNavigator.resetToPage("exp_index.html");
-			 } else{
-				console.log("index");
-			 }
-			 opration_flag=false;
-		}
-
-
-        var rep_hits_flag =  false; //連打防止
-
-    	function  hits_flag() {
-			rep_hits_flag= true;
-		    setTimeout( function (){
-				console.log("disabled");
-				hits_flag =false ;
-		    } , 1000); 			
-		}
-
-
-    (function ($) {
-        $('#returnhomea').on('show', function(){
-            this.play();
-            console.log("aaa");
-        });
-        $('#returnhomeb').on('show', function(){
-            this.play();
-            console.log("cccc");
-        });
-
-    })(jQuery);
-
-    ons.ready(function() {
+$(document).ready(function(){
 		console.log("Onsen UI is ready!");
 		//
 		const OP_TIME = 1300; //操作画面への遷移
 		const NEXTPAGE_TIME = 3000; //操作画面への遷移
 
         setBtnAnim();	
+		setBtnSound();
 
 		/*
 			イベントハンドラー
 		*/
     	// 一定期間操作がなければ　機器操作index
-    	
-		setInterval("opration_check(myNavigator)",NO_OPRATIN_TIME); //
+		setInterval(function(){opration_check('scn_menu.html','')},NO_OPRATIN_TIME);
+
     	//  すべて
-        scenario_exec("SCENARIO_ALLT_RESET");
 
         $(document).on('click',function(e) {
 		 opration_flag=true;
-		});
+
+        });
 
 
-        sendIRkit_init_command();
 
         /*
 		// begin 機器操作インデックス
@@ -160,15 +64,20 @@
 
 		//シナリオインデクス
         $(document).on('click','#scene_top_button',function(e) {
-\		});
+            console.log("シナリオインデクス(戻る)");
+		    setTimeout(function () {
+	            location.href = "scn_menu.html";
+		    }, 500);
+
+		});
 
 
     });
 
+});
   </script>
-
 </head>
-<body>  
+<body oncontextmenu="return false;">  
     <!--外出-->
 
     <div style="position: relative;margin: 0px; padding: 0px;width:100%;height: auto;">
@@ -178,7 +87,7 @@
         <img src="./hdimages/red_scn_shomei.png" class="scene_frame blink_anime small_view scenario-cur">
         <img border="0" src="./hdimages/bk_gaishutu.png" style="position: absolute;top:0;left:0">
         <div id="scene_top_button">
-            <img border="0" src="./hdimages/btn_scn_return.png" class="btn_tap_anim exp_index" style="position: absolute;left: 2289px;top:1409px" alt="機器の操作に戻る">
+            <img border="0" src="./hdimages/btn_scn_return.png" class="btn_tap_anim  btn_tap_sound exp_index" style="position: absolute;left: 2289px;top:1409px" alt="機器の操作に戻る">
         </div>
     </div>
 

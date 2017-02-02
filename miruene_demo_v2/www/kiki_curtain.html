@@ -10,11 +10,16 @@
     <!-- 効果音-->
     <script src="./js/ion.sound.min.js"></script>
     <script src="./js/sound.js"></script>
+    <script src="./js/keycheck.js"></script>
+
     <link rel="stylesheet" href="css/style.css">
     <script src="js/ir_send.js"></script>
     <script src="js/scenario.js"></script>
     <link rel="stylesheet" href="css/anime_btn.css">
     <script src="js/btn.js"></script>
+    <script src="js/const.js"></script>
+
+
 
     <title>機器の操作(カーテン)</title>
     
@@ -23,53 +28,15 @@
     </style>
 
   <script>
-        var opration_flag =  true; //操作されたかチェック
-        const DEFAULT_TEMPERATURE=25;// エアコン初期温度
-        const DEFAULT_HUMD =50 ;
-        function  use_vibrate() {
-            navigator.vibrate(100);
-        }
-        function  opration_check() {
-             if(!opration_flag){
-                console.log("index");
-    			// 家電機器初期設定
-                sendIRkit_init_command();
-                scenario_exec("SCENARIO_ALLT_RESET");
-				var val = DEFAULT_TEMPERATURE; //エアコン温度表示
-                location.href="kiki_menu.html";
-			 }
-			 opration_flag=false;
-		}
-
 
 $(document).ready(function(){
 		console.log("Onsen UI is ready!");
 		setBtnAnim();
 		setBtnSound();
   		//
-		const OP_TIME = 200; //操作画面への遷移
-		const NEXTPAGE_TIME = 3400; //操作画面への遷移
-		const NO_OPRATIN_TIME = 30000; //何もしなければ操作画面への遷移
-
 		// 一定期間操作がなければ　機器操作index
     	
-		setInterval(opration_check(),NO_OPRATIN_TIME); //
-
-
-		 // clearInterval(opration_check);
-
-        scenario_exec("SCENARIO_ALLT_RESET");
-
-        var rep_hits_flag =  false; //操作されたかチェック
-
-    	function  hits_flag() {
-			rep_hits_flag= true;
-            use_vibrate();
-            setTimeout( function (){
-				console.log("kye enabled");
-				rep_hits_flag =false ;
-		    } , 1500); 			
-		}
+		setInterval(function(){opration_check('kiki_menu.html','')},NO_OPRATIN_TIME);
 
 		/*
 			イベントハンドラー
@@ -105,12 +72,11 @@ $(document).ready(function(){
 		//機器操作インデクス
 		$(document).on('click','.op_index',function(e) {
 		    console.log("機器操作インデクス");
-            location.href="kiki_menu.html";
+			setTimeout(function () {
+			location.href="kiki_menu.html";
+			}, 500);
 		});
 
-
-    	$(document).on('click',function(e) {
-		});
 
 
     });
@@ -118,7 +84,7 @@ $(document).ready(function(){
   </script>
 </head>
 
-<body>
+<body oncontextmenu="return false;">
 	<div style="position: relative;margin: 0px; padding: 0px;width:100%;height: auto;">
 	    <img border="0" src="./hdimages/bk_curtain.png"  style="position: absolute;top:0;left:0">
 
@@ -126,7 +92,7 @@ $(document).ready(function(){
 
 	    <img border="0" src="./hdimages/btn_curtain_close.png" id="curtain_close" alt="カーテン閉める" class="btn_tap_anim btn_tap_sound" style="position:absolute;left:462px;top:978px;" >
 
-        <img border="0" src="./hdimages/btn_kiki_return.png" alt="戻る" class="btn_tap_anim btn_tap_sound op_index" style="position:absolute;left:145px;top:1424px;">    	</a>
+        <img border="0" src="./hdimages/btn_kiki_return.png" alt="戻る" class="btn_tap_anim  btn_tap_sound op_index" style="position:absolute;left:145px;top:1424px;">
 
 	</div>
 

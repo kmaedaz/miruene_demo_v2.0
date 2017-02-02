@@ -24,8 +24,9 @@
     <link rel="stylesheet" href="css/anime_btn.css">
     <script src="js/btn.js"></script>
 
-    <title>機器の操作</title>
-    
+    <script src="js/const.js"></script>
+
+    <title>機器の操作(照明)</title>
 
     <style>
     /*  エアコン */
@@ -97,144 +98,102 @@
     </style>
 
   <script>
-        var opration_flag =  true; //操作されたかチェック
-        const DEFAULT_TEMPERATURE=25;// エアコン初期温度
-        const DEFAULT_HUMD =50 ;
-        function  use_vibrate() {
-            navigator.vibrate(100);
-        }
-        function opration_check() {
-             
-             if(!opration_flag){
-                console.log("index");
-    			// 家電機器初期設定
-				location.href="kiki_menu.html";
-			 } else{
-				console.log("index");
-				return true;
-             }
-			 opration_flag=false;
-		}
+        var opration_flag =  false; //操作されたかチェック
 
-	$(document).ready(function(){
-		console.log("UI is ready!");
-		setBtnAnim();
-		setBtnSound();
-  		//
-		const OP_TIME = 200; //操作画面への遷移
-		const NEXTPAGE_TIME = 3400; //操作画面への遷移
-		const NO_OPRATIN_TIME = 30000; //何もしなければ操作画面への遷移
+    $(document).ready(function(){
+        console.log("UI is ready!");
+        setBtnAnim();
+        setBtnSound();
+        //
 
-		var temperature_value = DEFAULT_TEMPERATURE; //既定値
-		var aircon_temp_txt1 =  $("#aircon_temp_txt"); //エアコン温度表示
-    	var purifier_hum_txt1 = $("#purifier_hum_txt"); //湿度表示
-		var humd_value = DEFAULT_HUMD; //既定値
-			purifier_hum_txt1.innerHTML = humd_value ; 
-    		aircon_temp_txt1.innerHTML = temperature_value ; 
             
-    		var light_bright = 3;
+		var light_bright = 5; //明るさ
+
 		// 一定期間操作がなければ　機器操作index
-    	
-		setInterval(opration_check(),NO_OPRATIN_TIME); //
+		setInterval(function(){opration_check('kiki_menu.html','KIKI_LIGHT_OFFT')},NO_OPRATIN_TIME);
+         // clearInterval(opration_check);
 
-
-		 // clearInterval(opration_check);
-
-        scenario_exec("SCENARIO_ALLT_RESET");
-
-        var rep_hits_flag =  true; //操作されたかチェック
-
-    	function  hits_flag() {
-    	    if (rep_hits_flag) {
-    	        return true;
-    	    }
-    	    rep_hits_flag = true;
-            use_vibrate();
-            setTimeout( function (){
-				console.log("kye enabled");
-				rep_hits_flag =false ;
-		    } , 1500); 			
-            return false;
-
-    	}
-
-		/*
-			イベントハンドラー
-		*/
-		//  すべて
-		$(document).on('click',function(e) {
-		 opration_flag=true;
-		});
-
-
-		/*
-		// begin 機器操作インデックス　画面遷移
-		*/
-
-
-		/*------------------------------
-		　家電操作
-		--------------------------------*/
-		/*
-		 照明操作
-		*/
-		//イベントハンドら
-		$(document).on('click','#light_all_off',function(e) {
-		    sendIRUSB_command("LIGHT_OFF");
-			console.log("light_all_off");
-		});
-
-		//イベントハンドら
-		$(document).on('click','#light_all_on',function(e) {
-	     sendIRUSB_command("LIGHT_ON");
-			console.log("ight_all_on");
-		});
-
-		//イベント明るく
-		$(document).on('click','#light_bright',function(e) {
-             if (light_bright < 5) {
-				light_bright++;
-				var t = "LIGHT_STEP" + light_bright;
-				sendIRUSB_command(t);
-			}
-	            console.log("light_bright");
-		});
-
-		//イベント 減灯
-		$(document).on('click','#light_reduce',function(e) {
-		    sendIRUSB_command("LIGHT_WARMCOLOR"); //test
-            console.log("light_reduce");
+        /*
+            イベントハンドラー
+        */
+        //  すべて
+        $(document).on('click',function(e) {
+         opration_flag=true;
         });
 
-		//イベント常夜灯
-		$(document).on('click','#light_night',function(e) {
-		    sendIRUSB_command("JOUYA_ON");
-			console.log("light_night");
-		});
 
-		//イベント
-		$(document).on('click','#light_dark',function(e) {
-		    console.log("light_step:" + light_bright);
-
-		    if (light_bright > 1) {
-				light_bright--;
-				var t = "LIGHT_STEP" + light_bright;
-				console.log("light_dark"+t);
-				sendIRUSB_command(t);
-			}
-			console.log("light_dark");
-		});
+        /*
+        // begin 機器操作インデックス　画面遷移
+        */
 
 
+        /*------------------------------
+        　家電操作
+        --------------------------------*/
+        /*
+         照明操作
+        */
+        //イベントハンドら
+        $(document).on('click','#light_all_off',function(e) {
+			scenario_exec("KIKI_LIGHT_OFFT");
+	            console.log("light_all_off");
+        });
 
-		//機器操作インデクス
-		$(document).on('click','.op_index',function(e) {
-		    console.log("機器操作インデクス");
-            location.href="kiki_menu.html";
-		});
+        //イベントハンドら
+        $(document).on('click','#light_all_on',function(e) {
+         sendIRUSB_command("LIGHT_ON");
+            console.log("ight_all_on");
+        });
 
-    	$(document).on('click',function(e) {
-		});
+        //イベント明るく
+        $(document).on('click','#light_bright',function(e) {
+             if (light_bright < 5) {
+                light_bright++;
+                var t = "LIGHT_STEP" + light_bright;
+                sendIRUSB_command(t);
+            }
+                console.log("light_bright");
+        });
+
+        //イベント 減灯
+        $(document).on('click','#light_reduce',function(e) {
+            sendIRUSB_command("LIGHT_WARMCOLOR"); //test
+            console.log("減灯");
+        });
+
+        //イベント常夜灯
+        $(document).on('click','#light_night',function(e) {
+            sendIRUSB_command("JOUYA_ON");
+            console.log("常夜灯");
+        });
+
+        //イベント
+        $(document).on('click','#light_dark',function(e) {
+            console.log("light_step:" + light_bright);
+
+            if (light_bright > 1) {
+                light_bright--;
+                var t = "LIGHT_STEP" + light_bright;
+                console.log("light_dark"+t);
+                sendIRUSB_command(t);
+            }
+            console.log("light_dark");
+        });
+
+
+
+        //機器操作インデクス
+        $(document).on('click','.op_index',function(e) {
+            console.log("機器操作インデクス");
+		   scenario_exec("KIKI_LIGHT_OFFT");
+			setTimeout(	function (){
+			    location.href = "kiki_menu.html";
+			} , 2500);	            
+            
+        });
+
+        $(document).on('click',function(e) {
+        });
 
 
     });
@@ -242,7 +201,7 @@
   </script>
 </head>
 
-<body>
+<body oncontextmenu="return false;">
     <!--照明操作-->
 
     <div style="position: relative;margin: 0px; padding: 0px;width:100%;height: auto;">
@@ -259,7 +218,7 @@
         <img border="0" src="./hdimages/btn_shomei_down.png"  id="light_dark" class="btn_tap_anim btn_tap_sound " style="position:absolute;left:1424px;top:971px" alt="暗く">
         
         <img border="0" src="./hdimages/btn_kiki_return.png" class="op_index btn_tap_anim btn_tap_sound" style="position:absolute;left:145px;top:1424px"  alt="機器の操作に戻る">
-	</div>
+    </div>
     
 </body>
 </html>

@@ -2,49 +2,79 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, maximum-scale=1.0, minimum-scale=0.5,user-scalable=yes,initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=yes">
     <meta http-equiv="Content-Security-Policy" content="default-src * data:; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
-    <script type="text/javascript" src="cordova.js"></script>
-    <script type="text/javascript" src="scripts/platformOverrides.js"></script>
- 
-    <link rel="stylesheet" href="css/style.css">
-
     <script src="./js/jquery-1.11.3.min.js"></script>
-
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/anime_btn.css">
     <!-- 効果音-->
     <script src="./js/ion.sound.min.js"></script>
     <script src="./js/sound.js"></script>
-
-
-
-    <link rel="stylesheet" href="css/anime_btn.css">
     <script src="js/btn.js"></script>
+    <script src="js/ir_send.js"></script>
+
+
+    <script src="js/scenario.js"></script>
+
+
+	<script type="text/javascript">
+
+	window.onunload = function(){};
+
+	history.forward();
+
+	</script>
 
   <script>
-      $(document).ready(function () {
-        console.log("Javascript is ready!");
-        setBtnAnim();
-        setBtnSound();
 
-    });
+
+
+        $(document).ready(function () {
+                console.log("is ready!");
+                setBtnAnim();
+                setBtnSound();
+                //
+
+                /*
+                    イベントハンドラー
+                */
+                //  すべて
+
+
+                /*------------------------------
+                　家電操作
+                --------------------------------*/
+                $(document).on('click', '#kiki_menu', function (e) {
+                    console.log("kiki_menu");
+                    setTimeout( function (){
+                        location.href="kiki_menu.html";
+                    } , 300);                  
+
+                });
+
+                $(document).on('click', '#scn_menu', function (e) {
+                    console.log("scn_menu");
+                   scenario_exec("SCENARIO_TOP_RESET");
+                    setTimeout( function (){
+                        location.href="scn_menu.html";
+                    } , 300);                  
+                });
+
+				$( window ).unload(function() {
+					$("body").fadeOut(500);
+				});
+        });
+
   </script>
 </head>
-<body>
+<body oncontextmenu="return false;">
 
 
  <!-- index.html -->
     <div style="position: relative;margin: 0px; padding: 0px;width:100%;height: auto;">
         <img border="0" src="./hdimages/bk_top_menu.png" style="top:0;left:0;">
-        <a href="kiki_menu.html">
-            <img border="0" src="./hdimages/btn_kiki.png" class="btn_tap_anim btn_tap_sound" style="position: absolute;left:293px;top:571px;width:1012px;" alt="機器の操作">
-        </a>
-        <a href="scn_menu.html">
-            <img border="0" src="./hdimages/btn_scenario.png" class="btn_tap_anim btn_tap_sound'" style="position: absolute;left:1473px;top:571px;width:1012px;" alt="シナリオ操作">
-        </a>
-        <p></p>
-
-        <a href="setup.html">.</a>
+            <img border="0" src="./hdimages/btn_kiki.png" id="kiki_menu"     class="btn_tap_anim btn_tap_sound" style="position: absolute;left:293px;top:571px;width:1012px;" alt="機器の操作">
+            <img border="0" src="./hdimages/btn_scenario.png" id="scn_menu"  class="btn_tap_anim btn_tap_sound" style="position: absolute;left:1473px;top:571px;width:1012px;" alt="シナリオ操作">        <p></p>
     </div>
-
 </body>
 </html>

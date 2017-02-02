@@ -8,6 +8,9 @@
     <script src="./js/jquery-1.11.3.min.js"></script>
 
     <link rel="stylesheet" href="css/style.css">
+     <!-- 効果音-->
+    <script src="./js/ion.sound.min.js"></script>
+    <script src="./js/sound.js"></script>
 
 
     <link rel="stylesheet" href="css/anime_btn.css">
@@ -37,15 +40,15 @@
 		const RETURN_HOME_LATTER_HALF =12000 ;//･帰宅後半の動画開始
 
         setBtnAnim();	
+		setBtnSound();
 
 		/*
 			イベントハンドラー
 		*/
-    	// 一定期間操作がなければ　機器操作index
     	
-		setInterval("opration_check(myNavigator)",NO_OPRATIN_TIME); //
-    	//  すべて
-        scenario_exec("SCENARIO_ALLT_RESET");
+    	// 一定期間操作がなければ　機器操作index
+		setInterval(function(){opration_check('scn_menu.html','')},NO_OPRATIN_TIME);
+
 
         $(document).on('click',function(e) {
 		 opration_flag=true;
@@ -63,19 +66,29 @@
 		// end 機器操作インデックス
 		*/
 
-        //シナリオインデクス(戻る)
-        $(document).on('click', '#scene_top_button', function (e) {
+
+        //シナリオインデクス
+        $(document).on('click','#scene_top_button',function(e) {
             console.log("シナリオインデクス(戻る)");
-            location.href = "scn_menu.html";
+		    setTimeout(function () {
+		        location.href = "scn_menu.html"; //　
+		    }, 500);
         });
 
 
+        $(document).on('click', '#scene_top_button', function (e) {
+
+        
+        
+        
+        });
     });
+
 
   </script>
 
 </head>
-<body>
+ <body oncontextmenu="return false;">
 
  <!-- 
 　　　防犯シナリオ
@@ -88,11 +101,11 @@
         <video src="./movie/bohan.mp4" preload="none" class="movie_field" autoplay id="video"> </video>
         <img src="./hdimages/bk_house.png" class="photo scene_frame small_view ">
         <img src="./hdimages/red_scn_curtain.png" class="scene_frame blink_anime small_view scenario-aircom">
-        <img src="./hdimages/scn_shomei.png" class="scene_frame blink_anime small_view scenario-cur">
+        <img src="./hdimages/red_scn_shomei.png" class="scene_frame blink_anime small_view scenario-cur">
         <img border="0" src="./hdimages/bk_bohan.png" style="position: absolute;top:0;left:0">
 
         <div id="scene_top_button">
-            <img border="0" src="./hdimages/btn_scn_return.png" class="btn_tap_anim exp_index" style="position: absolute;left: 2289px;top:1409px" alt="機器の操作に戻る">
+            <img border="0" src="./hdimages/btn_scn_return.png" class="btn_tap_anim btn_tap_sound exp_index" style="position: absolute;left: 2289px;top:1409px" alt="機器の操作に戻る">
         </div>
     </div>
 

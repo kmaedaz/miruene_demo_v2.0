@@ -10,6 +10,9 @@
     <link rel="stylesheet" href="css/anime_btn.css">
     <script src="js/btn.js"></script>
     <script src="js/ir_send.js"></script>
+     <!-- 効果音-->
+    <script src="./js/ion.sound.min.js"></script>
+    <script src="./js/sound.js"></script>
 
     <script src="js/scenario.js"></script>
 
@@ -56,13 +59,13 @@ $(document).ready(function(){
 		const RETURN_HOME_LATTER_HALF =12000 ;//･帰宅後半の動画開始
 
         setBtnAnim();	
+		setBtnSound();
 
 		/*
 			イベントハンドラー
 		*/
     	// 一定期間操作がなければ　機器操作index
-    	
-		setInterval("opration_check()",NO_OPRATIN_TIME); //
+		setInterval(function(){opration_check('scn_menu.html','SCENARIO_POST_RETURNING')},NO_OPRATIN_TIME);
     	//  すべて
 
         $(document).on('click',function(e) {
@@ -78,7 +81,10 @@ $(document).ready(function(){
     //シナリオインデクス(戻る)
 	   $(document).on('click', '#scene_top_button', function (e) {
 	       console.log("シナリオインデクス(戻る)");
-	       location.href = "scn_menu.html";
+		   scenario_exec("SCENARIO_POST_RETURNING");
+			setTimeout(	function (){
+				location.href="scn_menu.html";
+			} , 2500);					
 	   });
 
     });
@@ -86,7 +92,7 @@ $(document).ready(function(){
   </script>
 
 </head>
-<body>
+<body oncontextmenu="return false;">
 
  <!-- 
 	起床	
@@ -100,7 +106,7 @@ $(document).ready(function(){
         <img src="./hdimages/red_scn_shomei.png" class="scene_frame blink_anime small_view scenario-aircom">
         <img src="./hdimages/red_scn_aircon.png" class="scene_frame blink_anime small_view scenario-cur">
         <div id="scene_top_button">
-            <img border="0" src="./hdimages/btn_scn_return.png" class="btn_tap_anim exp_index" style="position: absolute;left: 2289px;top:1409px;display:block;" alt="機器の操作に戻る">
+            <img border="0" src="./hdimages/btn_scn_return.png" class="btn_tap_anim btn_tap_sound exp_index" style="position: absolute;left: 2289px;top:1409px;display:block;" alt="機器の操作に戻る">
         </div>
     </div>
 </body>

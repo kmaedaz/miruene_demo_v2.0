@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/anime_btn.css">
     <script src="js/btn.js"></script>
-
+    <script src="js/ir_send.js"></script>
     <script src="js/scenario.js"></script>
 
 <style>
@@ -26,7 +26,7 @@ $(document).ready(function(){
 		const NEXTPAGE_TIME = 3000; //操作画面への遷移
 		const DEFAULT_TEMPERATURE=26;// 初期温度
     	const NO_OPRATIN_TIME = 38000; //何もしなければ操作画面への遷移
-		const RETURN_HOME_LATTER_HALF =9000 ;//･帰宅後半の動画開始
+		const RETURN_HOME_LATTER_HALF =11000 ;//･帰宅後半の動画開始
 
         setBtnAnim();	
 
@@ -45,6 +45,10 @@ $(document).ready(function(){
             location.href="scn_kitaku_b.html";
         }, RETURN_HOME_LATTER_HALF);
 
+        //帰宅
+        scenario_post_str = "SCENARIO_POST_WAKEUP";
+        scenario_exec("SCENARIO_RETURNING");
+
 
         /*
 		// begin 機器操作インデックス
@@ -59,7 +63,7 @@ $(document).ready(function(){
   </script>
 
 </head>
-<body>
+<body oncontextmenu="return false;">
 
  <!-- 
      帰宅

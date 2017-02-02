@@ -7,19 +7,15 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, maximum-scale=1.0, minimum-scale=0.5,user-scalable=yes,initial-scale=1.0">
     <meta http-equiv="Content-Security-Policy" content="default-src * data:; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
-    <script type="text/javascript" src="cordova.js"></script>
-    <script type="text/javascript" src="scripts/platformOverrides.js"></script>
     <script src="./js/jquery-1.11.3.min.js"></script>
-    <!-- 効果音-->
     <script src="./js/ion.sound.min.js"></script>
     <script src="./js/sound.js"></script>
     <link rel="stylesheet" href="css/style.css">
     <script src="js/ir_send.js"></script>
     <script src="js/scenario.js"></script>
-
     <link rel="stylesheet" href="css/anime_btn.css">
     <script src="js/btn.js"></script>
-
+    <script src="js/const.js"></script>
     <title>機器の操作</title>
   
 
@@ -28,25 +24,12 @@
 
   <script>
         var opration_flag =  false; //操作されたかチェック
-        const DEFAULT_TEMPERATURE=25;// エアコン初期温度
-        const DEFAULT_HUMD =50 ;
-        function  use_vibrate() {
-            navigator.vibrate(100);
-        }
 
 
     $(document).ready(function () {
 		console.log("Onsen UI is ready!");
         setBtnAnim(); 
-  		//
-		const OP_TIME = 800; //操作画面への遷移
-		const NEXTPAGE_TIME = 3400; //操作画面への遷移
-		const NO_OPRATIN_TIME = 30000; //何もしなければ操作画面への遷移
-
-
-    	scenario_exec("SCENARIO_ALLT_RESET");
-
-
+		setBtnSound();
 		/*
 			イベントハンドラー
 		*/
@@ -136,24 +119,22 @@
   </script>
 </head>
 
-<body>
+<body oncontextmenu="return false;">
  <!-- 
 	 機器の操作インデクス 
  -->
     <div style="position: relative;margin: 0px; padding: 0px;width:100%;height: auto;">
 
-        <img border="0" src="./hdimages/bk_kiki_menu.png"  style="position: absolute;top:0;left:0;width:100%;">
-
-        <img border="0" src="./hdimages/btn_kiki_shomei.png" id="light_op" class="btn_tap_anim" style="position:absolute;left:580px;top:575px;width:485px;" alt="照明">
-        <img border="0" src="./hdimages/btn_kiki_aircon.png" id="aircon_op" class="btn_tap_anim" style="position:absolute;left:1131px;top:575px;width:485px" alt="エアコン">
-        <img border="0" src="./hdimages/btn_kiki_tv.png" id="tv_op" class="btn_tap_anim" style="position: absolute;left:1683px;top:575px;width:485px" alt="テレビ">
-        <img border="0" src="./hdimages/btn_kiki_audio.png" id="audio_op" class="btn_tap_anim" style="position: absolute;left:304px;top:992px;width:485px" alt="オーディオ">
-        <img border="0" src="./hdimages/btn_kiki_kasitu.png" class="btn_tap_anim" style="position: absolute;left:885px;top:992px;width:485px" alt="空気清浄機">
-        <img border="0" src="./hdimages/btn_kiki_curtain.png" id="purifier_op" class="btn_tap_anim" style="position: absolute;left:1407px;top:992px;width:485px" alt="カーテン">
-        <img border="0" src="./hdimages/btn_kiki_pet.png"  id="petfeeter_op" class="btn_tap_anim" style="position: absolute;left:1958px;top:992px;width:485px" alt="自動餌">
-        <img border="0" src="./hdimages/btn_return.png"   id="top_menu"  class="btn_tap_anim" style="position: absolute;left:145px;top:1424px;width:192px;" alt="TOPに戻る">
-
+        <img border="0" src="./hdimages/bk_kiki_menu.png"  style="position: absolute;top:0;left:0">
+        <img border="0" src="./hdimages/btn_kiki_shomei.png" id="light_op" class="btn_tap_anim btn_tap_sound" style="position:absolute;left:580px;top:575px" alt="照明">
+        <img border="0" src="./hdimages/btn_kiki_aircon.png" id="aircon_op" class="btn_tap_anim btn_tap_sound" style="position:absolute;left:1131px;top:575px;width:485px" alt="エアコン">
+        <img border="0" src="./hdimages/btn_kiki_tv.png" id="tv_op" class="btn_tap_anim btn_tap_sound" style="position: absolute;left:1683px;top:575px;width:485px" alt="テレビ">
+        <img border="0" src="./hdimages/btn_kiki_audio.png" id="audio_op" class="btn_tap_anim btn_tap_sound" style="position: absolute;left:304px;top:992px;width:485px" alt="オーディオ">
+        <img border="0" src="./hdimages/btn_kiki_kasitu.png" id="purifier_op" class="btn_tap_anim btn_tap_sound" style="position: absolute;left:885px;top:992px;width:485px" alt="空気清浄機">
+        <img border="0" src="./hdimages/btn_kiki_curtain.png" id="curtain_op" class="btn_tap_anim btn_tap_sound" style="position: absolute;left:1407px;top:992px;width:485px" alt="カーテン">
+        <img border="0" src="./hdimages/btn_kiki_pet.png"  id="petfeeter_op" class="btn_tap_anim btn_tap_sound" style="position: absolute;left:1958px;top:992px;width:485px" alt="自動餌">
+        <img border="0" src="./hdimages/btn_return.png"   id="top_menu"  class="btn_tap_anim btn_tap_sound" style="position: absolute;left:145px;top:1424px;width:192px;" alt="TOPに戻る">
     </div>
-    
+   
 </body>
 </html>
